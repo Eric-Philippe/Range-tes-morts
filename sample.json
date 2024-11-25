@@ -1,0 +1,24 @@
+{ 
+    "SAMPLE": [
+        {
+            "id":1,
+            "name":"Lot A",
+            "graves":[
+                {
+                    "id":1,
+                    "state":0,
+                    "lot_id":1,
+                    "deads":[
+                        {
+                            "id":1,
+                            "first_name":"John",
+                            "last_name":"Doe",
+                            "entry_date":"2023-10-01",
+                            "grave_id":1
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
