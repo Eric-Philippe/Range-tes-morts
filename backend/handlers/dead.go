@@ -1,15 +1,17 @@
 package handlers
 
 import (
-    "encoding/json"
-    "net/http"
-    "strconv" // Add this import
+	"encoding/json"
+	"net/http"
+	"strconv"
 
-    "backend/database"
-    "backend/models"
-    "github.com/gorilla/mux"
+	"backend/database"
+	"backend/models"
+
+	"github.com/gorilla/mux"
 )
 
+// CreateDeadForGrave creates a new dead for a grave
 func CreateDeadForGrave(w http.ResponseWriter, r *http.Request) {
     var dead models.Dead
     if err := json.NewDecoder(r.Body).Decode(&dead); err != nil {
@@ -33,6 +35,7 @@ func CreateDeadForGrave(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(dead)
 }
 
+// GetDeads returns all deads
 func GetDeads(w http.ResponseWriter, r *http.Request) {
     var deads []models.Dead
     if result := database.DB.Find(&deads); result.Error != nil {
@@ -43,9 +46,10 @@ func GetDeads(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(deads)
 }
 
+// GetDead returns a dead
 func GetDead(w http.ResponseWriter, r *http.Request) {
     var dead models.Dead
-    if result := database.DB.First(&dead, mux.Vars(r)["id"]).Error; result.Error != nil {
+    if result := database.DB.First(&dead, mux.Vars(r)["id"]).Error; result != nil {
         http.Error(w, result.Error(), http.StatusInternalServerError)
         return
     }

@@ -1,24 +1,26 @@
 package models
 
+// GraveState represents the current state of a grave either in its availability or its duration
 type GraveState int
 
 const (
-    EMPTY GraveState = iota
-    RESERVED
-    PERPETUEL
-    FIFTEEN
-    THIRTY
-    FIFTY
+    EMPTY GraveState = iota // 0
+    RESERVED                // 1
+    PERPETUAL               // 2
+    FIFTEEN                 // 3
+    THIRTY                  // 4
+    FIFTY                   // 5
 )
 
+// String returns the string representation of a GraveState
 func (s GraveState) String() string {
     switch s {
     case EMPTY:
         return "EMPTY"
     case RESERVED:
         return "RESERVED"
-    case PERPETUEL:
-        return "PERPETUEL"
+    case PERPETUAL:
+        return "PERPETUAL"
     case FIFTEEN:
         return "FIFTEEN"
     case THIRTY:
@@ -30,6 +32,7 @@ func (s GraveState) String() string {
     }
 }
 
+// Grave represents a grave in a lot and can contain multiple deads
 type Grave struct {
     ID     uint       `json:"id" gorm:"primaryKey"`
     State  GraveState `json:"state"`

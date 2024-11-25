@@ -1,5 +1,6 @@
 package models
 
+// Dead represents a dead person in a grave
 type Dead struct {
     ID        uint   `json:"id" gorm:"primaryKey"`
     FirstName string `json:"first_name"`

@@ -1,14 +1,17 @@
 package main
 
 import (
-    "backend/database"
-    "backend/handlers"
-    "backend/models"
-    "log"
-    "net/http"
+	"backend/database"
+	"backend/handlers"
+	"backend/models"
+	"log"
+	"net/http"
+	"strconv"
 
-    "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 )
+
+const port = 3000
 
 func main() {
     // Initialize the database
@@ -35,8 +38,8 @@ func main() {
     r.HandleFunc("/graves/{id}/state", handlers.UpdateGraveState).Methods("PUT")
 
     // Display a message when the server is started
-    log.Println("Le serveur est démarré sur le port 3000")
+    log.Println("Le serveur est démarré sur le port", port)
 
     // Start the server
-    log.Fatal(http.ListenAndServe(":3000", r))
+    log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), r))
 }
