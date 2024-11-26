@@ -35,6 +35,7 @@ func (s GraveState) String() string {
 // Grave represents a grave in a lot and can contain multiple deads
 type Grave struct {
     ID     uint       `json:"id" gorm:"primaryKey"`
+    Number uint       `json:"number"`
     State  GraveState `json:"state"`
     LotID  uint       `json:"lot_id"`
     Deads  []Dead     `json:"deads,omitempty"`

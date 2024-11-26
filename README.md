@@ -5,7 +5,7 @@
 ### Step 1: Create a lot
 
 ```bash
-curl -X POST http://localhost:3000/lot -H "Content-Type: application/json" -d '{
+curl -X POST http://localhost:3000/lots -H "Content-Type: application/json" -d '{
     "name": "Lot A"
 }'
 ```
@@ -13,9 +13,10 @@ curl -X POST http://localhost:3000/lot -H "Content-Type: application/json" -d '{
 ### Step 2: Add graves to the lot
 
 ```bash
-curl -X POST http://localhost:3000/grave -H "Content-Type: application/json" -d '{
+curl -X POST http://localhost:3000/graves -H "Content-Type: application/json" -d '{
     "state": 0,
-    "lot_id": 1
+    "lot_id": 1,
+    "number": 1
 }'
 ```
 
@@ -32,7 +33,7 @@ curl -X POST http://localhost:3000/graves/1/deads -H "Content-Type: application/
 ### Step 4: Get all the lots
 
 ```bash
-curl http://localhost:3000/lot
+curl http://localhost:3000/lots
 ```
 
 ### Step 5: Get the newly created lot
