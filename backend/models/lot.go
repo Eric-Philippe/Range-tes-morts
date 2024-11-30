@@ -1,10 +1,7 @@
 package models
 
-/*
-One Lot contains many Graves
-*/
 type Lot struct {
-    ID     uint    `json:"id" gorm:"primaryKey"`
-    Name   string  `json:"name"`
-    Graves []Grave `json:"graves,omitempty"`
+    ID     uint   `json:"id" gorm:"primaryKey"`
+    Name   string `json:"name" gorm:"type:varchar(100)"`
+    Graves []Grave `json:"graves" gorm:"foreignKey:LotID"`
 }

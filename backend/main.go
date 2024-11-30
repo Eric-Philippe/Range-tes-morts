@@ -3,9 +3,11 @@ package main
 import (
 	"backend/database"
 	"backend/handlers"
+	"backend/helpers"
 	"backend/models"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -13,7 +15,24 @@ import (
 
 const port = 3000
 
+// Main function
+// If the file is run directly, the server is started
+// If there is a -migrate flag, the SVG file is parsed and the data is inserted into the database
 func main() {
+    // Get the command line arguments
+    args := os.Args
+
+    // If there is a -migrate flag, parse the SVG file and insert the data into the database
+    if len(args) > 1 && args[1] == "-migrate" {
+        helpers.MigrateSvgToDb("static/gravemap.svg")
+    } else {
+        // Start the server
+        serve()
+    }
+
+}
+
+func serve() {
     // Initialize the database
     database.Init()
     database.DB.AutoMigrate(&models.Grave{}, &models.Dead{}, &models.Lot{})
@@ -40,7 +59,7 @@ func main() {
     r.HandleFunc("/graves/{id}/state", handlers.UpdateGraveState).Methods("PUT")
 
     // Display a message when the server is started
-    log.Println("Le serveur est démarré sur le port", port)
+    log.Println("Server started on port", port)
 
     // Start the server
     log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), r))
