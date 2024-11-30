@@ -1,0 +1,23 @@
+#map-container, #table-container {
+    width: 49%;
+    height: 85vh;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#map-container {
+    margin-right: 2%;
+}
+
+#map-title {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+#table-title {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+

@@ -93,3 +93,5 @@ vendor/
 # Temporary files
 *.tmp
 *.temp
+
+.angular/

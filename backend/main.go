@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 const port = 3000
@@ -45,7 +46,7 @@ func serve() {
 
     r.HandleFunc("/lots", handlers.CreateLot).Methods("POST")
     r.HandleFunc("/graves", handlers.CreateGrave).Methods("POST")
-    r.HandleFunc("/graves/{id}/deads", handlers.CreateDeadForGrave).Methods("POST")
+    r.HandleFunc("/lots/{lotId}/graves/{graveId}/deads", handlers.CreateDeadForGrave).Methods("POST")
 
     r.HandleFunc("/lots", handlers.GetLots).Methods("GET")
     r.HandleFunc("/lots/{id}", handlers.GetLot).Methods("GET")
@@ -58,9 +59,17 @@ func serve() {
 
     r.HandleFunc("/graves/{id}/state", handlers.UpdateGraveState).Methods("PUT")
 
+    // Enable CORS
+    c := cors.New(cors.Options{
+        AllowedOrigins:   []string{"*"},
+        AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+        AllowedHeaders:   []string{"Content-Type", "Authorization"},
+        AllowCredentials: true,
+    })
+
     // Display a message when the server is started
     log.Println("Server started on port", port)
 
     // Start the server
-    log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), r))
+    log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), c.Handler(r)))
 }

@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"backend/database"
 	"backend/models"
@@ -14,18 +13,47 @@ import (
 // CreateDeadForGrave creates a new dead for a grave
 func CreateDeadForGrave(w http.ResponseWriter, r *http.Request) {
     var dead models.Dead
-    if err := json.NewDecoder(r.Body).Decode(&dead); err != nil {
+    var requestData struct {
+        FirstName string `json:"firstname"`
+        LastName  string `json:"lastname"`
+        EntryDate string `json:"entrydate"`
+        State     int    `json:"state"`
+    }
+
+    // curl -X POST http://localhost:3000/lots/{lotId}/graves/{graveId}/deads -H "Content-Type: application/json" -d '{
+    // "firstname": "John",
+    // "lastname": "Doe",
+    //  "entrydate": "2023-10-01",
+    //  "state": 1
+    // }'
+
+    if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
 
-    graveID, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 32)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
+    dead.FirstName = requestData.FirstName
+    dead.LastName = requestData.LastName
+    dead.EntryDate = requestData.EntryDate
+
+    var graveId = mux.Vars(r)["graveId"]
+    var lotId = mux.Vars(r)["lotId"]
+    dead.GraveID = lotId + "#" + graveId
+
+    var grave models.Grave
+    if result := database.DB.Where("id = ?", dead.GraveID).First(&grave); result.Error != nil {
+        http.Error(w, "Grave not found", http.StatusNotFound)
         return
     }
-    dead.GraveID = uint(graveID)
 
+    // Update the state of the grave
+    grave.State = models.GraveState(requestData.State)
+    if result := database.DB.Save(&grave); result.Error != nil {
+        http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // Create the dead
     if result := database.DB.Create(&dead); result.Error != nil {
         http.Error(w, result.Error.Error(), http.StatusInternalServerError)
         return

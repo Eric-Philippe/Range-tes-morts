@@ -61,7 +61,7 @@ func (h *SVGHelper) ParseSVG() ([]models.Lot, error) {
 						if element.XMLName.Local == "rect" && !strings.Contains(getAttr(element.Attr, "id"), "PATH") {
 							graveIdentifier := strings.TrimPrefix(getAttr(element.Attr, "id"), subLotName+"#")
 							graves = append(graves, models.Grave{
-								ID: subLotName + "$" + graveIdentifier,
+								ID: subLotName + "#" + graveIdentifier,
 								Identifier: graveIdentifier,
 								State:      0,
 								LotID:      lotID,
@@ -107,6 +107,7 @@ func MigrateSvgToDb(filepath string) {
 	fmt.Println("Emptying the Grave and Lot tables")
 	database.DB.Exec("DELETE FROM graves")
 	database.DB.Exec("DELETE FROM lots")
+	database.DB.Exec("DELETE FROM deads")
 
 	// Create a new SVGHelper
 	svgHelper := NewSVGHelper(filepath)

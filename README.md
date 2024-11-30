@@ -23,10 +23,11 @@ curl -X POST http://localhost:3000/graves -H "Content-Type: application/json" -d
 ### Step 3: Add a deceased to the grave
 
 ```bash
-curl -X POST http://localhost:3000/graves/1/deads -H "Content-Type: application/json" -d '{
-    "first_name": "John",
-    "last_name": "Doe",
-    "entry_date": "2023-10-01"
+curl -X POST http://localhost:3000/lots/PERPETUAL/graves/49/deads -H "Content-Type: application/json" -d '{
+    "firstname": "John",
+    "lastname": "Doe",
+    "entrydate": "2023-10-01",
+    "state": 1
 }'
 ```
 
