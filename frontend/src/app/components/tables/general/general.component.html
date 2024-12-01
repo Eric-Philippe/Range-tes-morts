@@ -1,15 +1,48 @@
 <div class="card">
-    <p-table [value]="lots" [paginator]="true" [rows]="8">
+    <p-table [value]="lots" [paginator]="true" [rows]="3" [expandedRowKeys]="expandedRows" dataKey="id">
         <ng-template pTemplate="header">
             <tr>
+                <th style="width: 5rem"></th>
                 <th>Nom</th>
                 <th>Nombre de parcelles</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-lot>
+        <ng-template pTemplate="body" let-lot let-expanded="expanded">
             <tr>
-                <td><p-tag [value]="lot.name" [severity]="'info'" /></td>
+                <td>
+                    <p-button type="button" pRipple [pRowToggler]="lot" [text]="true" [rounded]="true" [plain]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                </td>
+                <td><p-tag [value]="getLotName(lot)" [severity]="'info'" /></td>
                 <td>{{ getParcelleCount(lot) }}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-lot>
+            <tr>
+                <td colspan="7">
+                    <div class="p-3">
+                        <p-table [value]="lot.graves" [scrollable]="true" scrollHeight="250px" selectionMode="single" [(selection)]="selectedGrave" dataKey="id" (onRowSelect)="onRowSelect($event)">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="id">Numéro</th>
+                                    <th pSortableColumn="state">Type</th>
+                                    <th pSortableColumn="deads">Nombre de mort</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-grave>
+                                <tr [pSelectableRow]="grave">
+                                    <td>{{ grave.identifier }}</td>   
+                                    <td><p-tag [value]="getGraveType(grave)" [style]="{background: getColor(grave)}"/></td>
+                                    <td>{{ getDeadCount(grave) }}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="6">There are no order for this product yet.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </td>
             </tr>
         </ng-template>
     </p-table>

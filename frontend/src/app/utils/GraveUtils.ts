@@ -11,7 +11,7 @@ export enum GraveTypeEnum {
 
 // Pastel color, Empty is almost white, and then pastel colors
 const GraveTypeColors: { [key: number]: string } = {
-    0: '#f0f0f0',
+    0: '#e0e0e0',
     1: '#ffcc99',
     2: '#ff9999',
     3: '#ffccff',

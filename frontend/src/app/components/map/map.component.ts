@@ -17,7 +17,7 @@ const DEFAULT_SVG_PAN_OPTIONS = {
     maxZoom: 10,
     zoomScaleSensitivity: 0.5,
     contain: true
-}
+};
 
 @Component({
     standalone: true,
@@ -27,6 +27,8 @@ const DEFAULT_SVG_PAN_OPTIONS = {
     styleUrls: ["./map.component.css"],
 })
 export class MapComponent implements AfterViewInit, OnChanges {
+    @Input() lots: Lot[] = [];
+
     constructor(
         private http: HttpClient,
         private renderer: Renderer2,
@@ -34,144 +36,135 @@ export class MapComponent implements AfterViewInit, OnChanges {
     ) {
         this.graveSelectedService.selectedItem$.subscribe(grave => {
             if (grave) {
-                alert(GraveUtils.toString(grave as Grave));
+                this.reloadSVG(grave as Grave);
             }
-        })
-     }
-
-    @Input() lots: Lot[] = [];
+        });
+    }
 
     ngAfterViewInit() {
-        this.defaultPanSetup();
+        this.setupPanZoom();
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes["lots"] && changes["lots"].currentValue && changes["lots"].currentValue.length > 0) {
+        if (changes["lots"]?.currentValue?.length) {
             this.loadSVG();
         }
     }
 
-    getGrave(identifier: string): Grave | undefined {        
-        if (!identifier.includes('#')) return;
-
-        const [lotName, graveIdentifier] = identifier.split('#');
-
-        let lot = this.lots.find(lot => lot.name == lotName);
-        if (!lot || !lot.graves) return;
-
-        return lot.graves.find(grave => grave.identifier == graveIdentifier);
-    }
-
-    getSvgsGraves(svgElement: SVGElement) {
-        return Array.from(svgElement.querySelectorAll('[id*="#"]'))
-        .filter(element => !element.id.includes('PATH'));
-    }
-
-    getSvgsLots(svgElement: SVGElement) {
-        return Array.from(svgElement.querySelectorAll('[id*="PATH"]'));
-    }
-
-    loadSVG() {
+    private loadSVG() {
         this.http.get('/gravemap.svg', { responseType: 'text' }).subscribe(svgContent => {
-            const parser = new DOMParser();
-            const svgElement = parser.parseFromString(svgContent, 'image/svg+xml').documentElement;
             const svgContainer = document.getElementById('svg-container');
             if (svgContainer) {
-                svgElement.setAttribute('id', "gravemap-svg");
+                svgContainer.innerHTML = svgContent;
+                const svgElement = svgContainer.querySelector('svg') as SVGElement;
+                svgElement.id = 'gravemap-svg';
                 svgElement.setAttribute('width', '100%');
                 svgElement.setAttribute('height', '100%');
-                svgContainer.appendChild(svgElement);
-                this.addHoverEffect(svgElement as unknown as SVGElement);
-                this.defaultPanSetup();
+                this.addInteractions(svgElement);
+                this.setupPanZoom();
             }
         });
     }
 
-    addHoverEffect(svgElement: SVGElement) {
-        const elements = this.getSvgsGraves(svgElement);
-        const pathElements = this.getSvgsLots(svgElement);
+    private reloadSVG(grave: Grave) {    
+        const svgContainer = document.getElementById('svg-container');
+        if (svgContainer) {
+            svgContainer.innerHTML = '';
+            this.loadSVG();
+            setTimeout(() => this.centerOnGrave(grave), 500);
+        }
+    }
+        
 
-        elements.forEach(element => {
-            this.renderer.listen(element, 'mouseover', () => {
-                this.applyHoverEffect(element);
-            });
-            this.renderer.listen(element, 'mouseout', () => {
-                this.removeHoverEffect(element);
-            });
-            this.renderer.listen(element, 'click', () => {
-                this.applyOnClickEffect(element);
-            });
-
-            let grave = this.getGrave(element.id);
-            if (grave) {
-                this.renderer.setStyle(element, 'fill', GraveUtils.getColor(grave));
-                this.renderer.setStyle(element, 'fill-opacity', '1');
-            }
-        });
+    private addInteractions(svgElement: SVGElement) {
+        const pathElements = Array.from(svgElement.querySelectorAll('[id*="PATH"]'));
 
         pathElements.forEach(pathElement => {
             this.renderer.setStyle(pathElement, 'pointer-events', 'none');
         });
+
+        const graves = Array.from(svgElement.querySelectorAll('[id*="#"]:not([id*="PATH"])'));
+        graves.forEach(element => {
+            const grave = this.getGrave(element.id);
+            if (grave) {
+                this.addInteraction(element, grave);  
+            }
+        });
     }
 
-    applyHoverEffect(element: Element) {
-        let elementId = element.id;
-        let grave = this.getGrave(elementId);
-        if (!grave) return;
+    private addInteraction(element: Element, grave: Grave) {
+        this.applyInitialStyle(element, grave);
+        this.renderer.listen(element, 'mouseover', () => this.applyHoverStyle(element, grave));
+        this.renderer.listen(element, 'mouseout', () => this.applyInitialStyle(element, grave));
+        this.renderer.listen(element, 'click', () => this.selectGrave(grave));
+    }
 
-        let color = GraveUtils.getColor(grave);
-        // Make it darker
-        let darkerColor = color.replace('#', '');
-        let r = parseInt(darkerColor.substring(0, 2), 16);
-        let g = parseInt(darkerColor.substring(2, 4), 16);
-        let b = parseInt(darkerColor.substring(4, 6), 16);
-        r = Math.max(0, r - 50);
-        g = Math.max(0, g - 50);
-        b = Math.max(0, b - 50);
-
-        darkerColor = '#' + r.toString(16) + g.toString(16) + b.toString(16);
-
-        this.renderer.setStyle(element, 'fill', darkerColor);
+    private applyInitialStyle(element: Element, grave: Grave) {
+        const color = this.graveSelectedService.getSelectedItem()?.id === grave.id ? 'red' : GraveUtils.getColor(grave);
+        this.renderer.setStyle(element, 'fill', color);
         this.renderer.setStyle(element, 'fill-opacity', '1');
     }
 
-    applyOnClickEffect(element: Element) {
-        let elementId = element.id;
-        let grave = this.getGrave(elementId);
-        if (grave) this.graveSelectedService.selectItem(grave);
+    private applyHoverStyle(element: Element, grave: Grave) {
+        const color = GraveUtils.getColor(grave);
+        const darkerColor = this.darkenColor(color);
+        this.renderer.setStyle(element, 'fill', darkerColor);
     }
 
-    removeHoverEffect(element: Element) {
-        let elementId = element.id;
-        let grave = this.getGrave(elementId);
-        if (!grave) return;
-
-        this.renderer.setStyle(element, 'fill', GraveUtils.getColor(grave));
+    private darkenColor(color: string): string {
+        const rgb = color.match(/[\da-f]{2}/gi)?.map(c => Math.max(0, parseInt(c, 16) - 50).toString(16).padStart(2, '0'));
+        return `#${rgb?.join('')}`;
     }
 
-    defaultPanSetup(reset: boolean = false) {
+    private selectGrave(grave: Grave) {
+       alert(GraveUtils.toString(grave));
+        this.graveSelectedService.selectItem(null);
+    }
+    
+
+    private centerOnGrave(grave: Grave) {
+        const svgElement = document.getElementById('gravemap-svg');
+        if (!svgElement) return;
+
+        const graveElement = document.getElementById(grave.id.toString());
+        if (graveElement) {
+            const panZoomInstance = svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS);
+            const { x: graveX, y: graveY } = graveElement.getBoundingClientRect();
+            const { x: svgX, y: svgY } = svgElement.getBoundingClientRect();
+
+            panZoomInstance.zoom(2.5);
+            panZoomInstance.pan({
+                x: svgElement.clientWidth - (graveX - svgX) * 1.92,
+                y: svgElement.clientHeight - (graveY - svgY) * 1.62
+            });
+        }
+    }
+
+    setupPanZoom(reset = false) {
         const svgElement = document.getElementById('gravemap-svg');
         if (svgElement) {
             const panZoomInstance = svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS);
             if (reset) panZoomInstance.reset();
-            panZoomInstance.zoom(1.8)
-            panZoomInstance.pan({ x: svgElement.clientWidth / 5 , y: svgElement.clientHeight /  20});
+            panZoomInstance.zoom(1.8);
+            panZoomInstance.pan({ x: svgElement.clientWidth / 5, y: svgElement.clientHeight / 20 });
         }
+    }
+
+    private getGrave(identifier: string): Grave | undefined {
+        if (!identifier.includes('#')) return undefined;
+
+        const [lotName, graveIdentifier] = identifier.split('#');
+        const lot = this.lots.find(lot => lot.name === lotName);
+        return lot?.graves?.find(grave => grave.identifier === graveIdentifier);
     }
 
     zoomIn() {
         const svgElement = document.getElementById('gravemap-svg');
-        if (svgElement) {
-            const panZoomInstance = svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS);
-            panZoomInstance.zoomIn();
-        }
+        if (svgElement) svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS).zoomIn();
     }
 
     zoomOut() {
         const svgElement = document.getElementById('gravemap-svg');
-        if (svgElement) {
-            const panZoomInstance = svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS);
-            panZoomInstance.zoomOut();
-        }
+        if (svgElement) svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS).zoomOut();
     }
 }

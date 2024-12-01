@@ -13,4 +13,8 @@ export class GraveSelectionService {
   selectItem(item: any) {
     this.selectedItemSource.next(item);
   }
+
+  getSelectedItem(): Grave | Dead | null {
+    return this.selectedItemSource.getValue();
+  }
 }
