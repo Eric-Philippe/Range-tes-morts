@@ -2,24 +2,9 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Lot } from '../../../models/Lot';
 import { GraveSelectionService } from '../../../services/GraveSelection.service';
 import { GraveUtils } from '../../../utils/GraveUtils';
-import { Grave } from '../../../models/Grave';
 import { ImportsModule } from '../../../imports';
 import { Dead } from '../../../models/Dead';
-
-const MONTHS = [
-  'Janvier',
-  'Février',
-  'Mars',
-  'Avril',
-  'Mai',
-  'Juin',
-  'Juillet',
-  'Août',
-  'Septembre',
-  'Octobre',
-  'Novembre',
-  'Décembre',
-];
+import { MONTHS } from '../../../utils/Utils';
 
 @Component({
   standalone: true,
@@ -60,8 +45,10 @@ export class TableDeads implements OnChanges {
   }
 
   entryDateToReadable(entryDate: string): string {
-    const [year, month] = entryDate.split('-');
-    return `${MONTHS[parseInt(month) - 1]} ${year}`;
+    let date = new Date(entryDate);
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    return `${MONTHS[month - 1]} ${year}`;
   }
 
   getLotName(deadId: number): string {

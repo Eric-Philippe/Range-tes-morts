@@ -26,6 +26,8 @@ const DEFAULT_SVG_PAN_OPTIONS = {
   contain: true,
 };
 
+const SELECTED_GRAVE_COLOR = '#FF746C';
+
 @Component({
   standalone: true,
   imports: [ImportsModule],
@@ -42,7 +44,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
     private graveSelectedService: GraveSelectionService,
   ) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
-      if (grave && !this.graveSelectedService.isSelectedFromMap()) {
+      if (grave) {
         this.highlightSelectedGrave(grave as Grave);
       }
     });
@@ -107,11 +109,14 @@ export class MapComponent implements AfterViewInit, OnChanges {
   }
 
   private applyInitialStyle(element: Element, grave: Grave) {
-    const color =
-      !this.graveSelectedService.isSelectedFromMap() &&
-      this.graveSelectedService.getSelectedItem()?.id === grave.id
-        ? 'red'
-        : GraveUtils.getColor(grave);
+    const isTheSelectedGrave =
+      this.graveSelectedService.getSelectedItem()?.id === grave.id;
+    let color = isTheSelectedGrave
+      ? SELECTED_GRAVE_COLOR
+      : GraveUtils.getContrastedColor(grave);
+
+    // if (grave.state === 0 && !isTheSelectedGrave) color = '#e0e0e0';
+
     this.renderer.setStyle(element, 'fill', color);
     this.renderer.setStyle(element, 'fill-opacity', '1');
   }
@@ -132,6 +137,12 @@ export class MapComponent implements AfterViewInit, OnChanges {
   }
 
   private selectGrave(grave: Grave) {
+    // If the selected grave is already selected, deselect it
+    if (this.graveSelectedService.getSelectedItem()?.id === grave.id) {
+      this.graveSelectedService.selectItem(null);
+      return;
+    }
+
     this.graveSelectedService.selectItem(grave, true);
   }
 
@@ -151,12 +162,16 @@ export class MapComponent implements AfterViewInit, OnChanges {
     const selectedGraveElement = document.getElementById(`${grave.id}`);
 
     if (selectedGraveElement) {
-      this.renderer.setStyle(selectedGraveElement, 'fill', 'red');
+      this.renderer.setStyle(
+        selectedGraveElement,
+        'fill',
+        SELECTED_GRAVE_COLOR,
+      );
       this.renderer.setStyle(selectedGraveElement, 'fill-opacity', '1');
 
       // Zoomer sur la tombe sélectionnée
       const svgElement = document.getElementById('gravemap-svg');
-      if (svgElement) {
+      if (svgElement && !this.graveSelectedService.isSelectedFromMap()) {
         const panZoomInstance = svgPanZoom(svgElement);
         panZoomInstance.zoom(3);
 

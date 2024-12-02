@@ -11,12 +11,22 @@ export enum GraveTypeEnum {
 
 // Pastel color, Empty is almost white, and then pastel colors
 const GraveTypeColors: { [key: number]: string } = {
-  0: '#e0e0e0',
+  0: '#8a8888',
   1: '#ffcc99',
   2: '#ff9999',
   3: '#ffccff',
   4: '#cc99ff',
   5: '#99ccff',
+};
+
+// Darker color next to GraveTypeColors
+const GraveTypeColorsContrasted: { [key: number]: string } = {
+  0: '#e0e0e0',
+  1: '#ff9966',
+  2: '#ff6666',
+  3: '#ff99ff',
+  4: '#9966ff',
+  5: '#6699ff',
 };
 
 export class GraveUtils {
@@ -28,6 +38,10 @@ export class GraveUtils {
 
   static getColor(grave: Grave): string {
     return GraveTypeColors[grave.state];
+  }
+
+  static getContrastedColor(grave: Grave): string {
+    return GraveTypeColorsContrasted[grave.state];
   }
 
   static getGraveType(grave: Grave): string {

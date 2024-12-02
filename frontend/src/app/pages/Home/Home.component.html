@@ -7,12 +7,19 @@
   <div id="table-container" class="table-container">
     <div class="card">
       <h3 id="table-title">Informations</h3>
-      <p-tabView>
+      <p-tabView [(activeIndex)]="activeIndex">
         <p-tabPanel header="Général">
           <table-general [lots]="lots"></table-general>
         </p-tabPanel>
         <p-tabPanel header="Décédés">
           <table-deads [lots]="lots"></table-deads>
+        </p-tabPanel>
+        <p-tabPanel
+          header="Parcelle"
+          [disabled]="!graveSelected"
+          [selected]="graveSelected"
+        >
+          <grave-card [lots]="lots"></grave-card>
         </p-tabPanel>
       </p-tabView>
     </div>

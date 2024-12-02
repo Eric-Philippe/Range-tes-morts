@@ -1,0 +1,9 @@
+.inline-fields {
+  display: inline-flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.inline-fields > div {
+  flex: 3;
+}

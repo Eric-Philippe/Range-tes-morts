@@ -26,7 +26,7 @@ curl -X POST http://localhost:3000/graves -H "Content-Type: application/json" -d
 curl -X POST http://localhost:3000/lots/PERPETUAL/graves/49/deads -H "Content-Type: application/json" -d '{
     "firstname": "John",
     "lastname": "Doe",
-    "entrydate": "2023-10-01",
+    "entrydate": "2023-10-01T00:00:00Z",
     "state": 1
 }'
 ```

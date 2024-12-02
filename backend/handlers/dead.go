@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"backend/database"
 	"backend/models"
@@ -16,7 +17,7 @@ func CreateDeadForGrave(w http.ResponseWriter, r *http.Request) {
     var requestData struct {
         FirstName string `json:"firstname"`
         LastName  string `json:"lastname"`
-        EntryDate string `json:"entrydate"`
+        EntryDate time.Time `json:"entrydate"`
         State     int    `json:"state"`
     }
 
