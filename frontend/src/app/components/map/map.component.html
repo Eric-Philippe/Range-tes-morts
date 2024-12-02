@@ -1,12 +1,28 @@
 <div>
-    <div id="map-header" class="map-header">
-        <h3 id="map-title">Carte du Cimetière</h3>
-    </div>
-    <div id="svg-container" class="svg-container">
-    </div>
-    <div id="map-footer" class="map-footer">
-        <p-button severity="secondary" icon="pi pi-minus" label="Dézoom" (click)="zoomOut()" class="btn-spacing"></p-button>
-        <p-button icon="pi pi-refresh" label="Recentrer" (click)="setupPanZoom(true)" class="btn-spacing"></p-button>
-        <p-button severity="secondary" icon="pi pi-plus" label="Zoom" (click)="zoomIn()" class="btn-spacing"></p-button>
-    </div>
+  <div id="map-header" class="map-header">
+    <h3 id="map-title">Carte du Cimetière</h3>
+  </div>
+  <div id="svg-container" class="svg-container"></div>
+  <div id="map-footer" class="map-footer">
+    <p-button
+      severity="secondary"
+      icon="pi pi-minus"
+      label="Dézoom"
+      (click)="zoomOut()"
+      class="btn-spacing"
+    ></p-button>
+    <p-button
+      icon="pi pi-refresh"
+      label="Recentrer"
+      (click)="setupPanZoom(true)"
+      class="btn-spacing"
+    ></p-button>
+    <p-button
+      severity="secondary"
+      icon="pi pi-plus"
+      label="Zoom"
+      (click)="zoomIn()"
+      class="btn-spacing"
+    ></p-button>
+  </div>
 </div>

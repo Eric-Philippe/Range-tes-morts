@@ -1,23 +1,23 @@
 #svg-container {
-    overflow: hidden;
-    height: 70vh;
-    border: 0.1px solid rgb(95, 95, 95);
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
+  overflow: hidden;
+  height: 70vh;
+  border: 0.1px solid rgb(95, 95, 95);
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 #map-footer {
-    text-align: center;
-    font-size: 1.2em;
-    margin-top: 10px;
+  text-align: center;
+  font-size: 1.2em;
+  margin-top: 10px;
 }
 
 .btn-spacing {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 #map-title {
-    text-align: center;
-    font-size: 1.5em;
-    margin-top: 10px;
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 10px;
 }

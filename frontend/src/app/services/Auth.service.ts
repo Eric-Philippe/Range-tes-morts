@@ -14,7 +14,7 @@ export class AuthService {
       tap((res: any) => {
         localStorage.setItem('authUser', data.username);
         localStorage.setItem('name', res.name);
-      })
+      }),
     );
   }
 

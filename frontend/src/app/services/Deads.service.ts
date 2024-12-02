@@ -1,8 +1,4 @@
-import { Injectable } from "@angular/core";
-
-import { API } from "../conf/env";
+import { Injectable } from '@angular/core';
 
 @Injectable()
-export class DeadsService {
-
-}
+export class DeadsService {}
