@@ -1,28 +1,43 @@
-<div>
-  <div id="map-header" class="map-header">
-    <h3 id="map-title">Carte du Cimetière</h3>
+<div id="map-header" class="map-header">
+  <h3 id="map-title">Carte du Cimetière</h3>
+</div>
+<div id="legend-container" class="legend-container"></div>
+<div class="map-legend">
+  <p>Légende:</p>
+  <div
+    *ngFor="let graveType of GraveTypesLabelsColors"
+    style="display: inline-block; margin-right: 5px; margin-bottom: 5px"
+  >
+    <p-tag
+      [style]="{ background: graveType.color }"
+      [icon]="graveType.icon"
+      [value]="graveType.label"
+    />
   </div>
+</div>
+
+<div class="map-container">
   <div id="svg-container" class="svg-container"></div>
-  <div id="map-footer" class="map-footer">
-    <p-button
-      severity="secondary"
-      icon="pi pi-minus"
-      label="Dézoom"
-      (click)="zoomOut()"
-      class="btn-spacing"
-    ></p-button>
-    <p-button
-      icon="pi pi-refresh"
-      label="Recentrer"
-      (click)="setupPanZoom(true)"
-      class="btn-spacing"
-    ></p-button>
-    <p-button
-      severity="secondary"
-      icon="pi pi-plus"
-      label="Zoom"
-      (click)="zoomIn()"
-      class="btn-spacing"
-    ></p-button>
-  </div>
+</div>
+<div id="map-footer" class="map-footer">
+  <p-button
+    severity="secondary"
+    icon="pi pi-minus"
+    label="Dézoom"
+    (click)="zoomOut()"
+    class="btn-spacing"
+  ></p-button>
+  <p-button
+    icon="pi pi-refresh"
+    label="Recentrer"
+    (click)="setupPanZoom(true)"
+    class="btn-spacing"
+  ></p-button>
+  <p-button
+    severity="secondary"
+    icon="pi pi-plus"
+    label="Zoom"
+    (click)="zoomIn()"
+    class="btn-spacing"
+  ></p-button>
 </div>

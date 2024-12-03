@@ -1,13 +1,22 @@
-import { Component } from "@angular/core";
-import { ImportsModule } from "../../imports";
-import { LotsService } from "../../services/Lots.service";
+import { Component } from '@angular/core';
+import { ImportsModule } from '../../imports';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-    standalone: true,
-    imports: [ImportsModule],
-    templateUrl: "./Login.component.html",
-    providers: [LotsService]
+  standalone: true,
+  imports: [ImportsModule],
+  templateUrl: './Login.component.html',
+  providers: [],
 })
 export class LoginComponent {
+  formGroup!: FormGroup;
 
+  ngOnInit() {
+    this.formGroup = new FormGroup({
+      username: new FormControl(),
+      password: new FormControl(),
+    });
+  }
+
+  onSubmit() {}
 }

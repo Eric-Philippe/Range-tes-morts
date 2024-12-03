@@ -24,9 +24,9 @@ export class HeaderComponent implements OnInit {
         routerLink: '/home',
       },
       {
-        label: 'Préférences',
+        label: 'Guide',
         icon: 'pi pi-fw pi-cog',
-        routerLink: '/preferences',
+        routerLink: '/guide',
       },
     ];
   }

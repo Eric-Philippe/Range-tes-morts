@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { Lot } from '../../../models/Lot';
 import { GraveSelectionService } from '../../../services/GraveSelection.service';
-import { GraveTypes, GraveUtils } from '../../../utils/GraveUtils';
+import { GraveTypeMetadataT, GraveTypesMeta, GraveUtils } from '../../../utils/GraveUtils';
 import { Grave } from '../../../models/Grave';
 import { ImportsModule } from '../../../imports';
 import { Dead } from '../../../models/Dead';
@@ -25,7 +25,7 @@ export class GraveCard {
   @Input() lots: Lot[] = [];
   @ViewChild('op') overlayPanel: OverlayPanel | null = null;
 
-  graveTypes = GraveTypes;
+  graveTypes = GraveTypesMeta;
 
   grave: Grave | null = null;
   uneditedGrave: Grave | null = null;
@@ -147,7 +147,7 @@ export class GraveCard {
       : '';
   }
 
-  getGraveStatutCode(): { code: number; name: string } {
+  getGraveStatutCode(): any {
     if (!this.grave) return this.graveTypes[0];
     return this.graveTypes.find((type) => type.code === this.grave?.state) || this.graveTypes[0];
   }

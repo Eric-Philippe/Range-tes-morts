@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Lot } from '../../../models/Lot';
 import { GraveSelectionService } from '../../../services/GraveSelection.service';
-import { GraveTypes, GraveUtils } from '../../../utils/GraveUtils';
+import { GraveTypesMeta, GraveUtils } from '../../../utils/GraveUtils';
 import { ImportsModule } from '../../../imports';
 import { Dead } from '../../../models/Dead';
 import { MONTHS } from '../../../utils/Utils';
@@ -30,11 +30,13 @@ export class TableDeads implements OnChanges {
     });
   }
 
-  GraveTypesArray: { label: string; value: string; index: number }[] = GraveTypes.map((type) => ({
-    label: type.name,
-    value: type.name,
-    index: type.code,
-  }));
+  GraveTypesArray: { label: string; value: string; index: number }[] = GraveTypesMeta.map(
+    (type) => ({
+      label: type.label,
+      value: type.label,
+      index: type.code,
+    }),
+  );
 
   @Input() lots: Lot[] = [];
   deads: DeadT[] = [];

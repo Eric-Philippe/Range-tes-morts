@@ -10,34 +10,52 @@ export enum GraveTypeEnum {
   FIFTY = 5,
 }
 
-export const GraveTypes = [
-  { name: 'Vide', code: 0 },
-  { name: 'Réservée', code: 1 },
-  { name: 'Perpétuité', code: 2 },
-  { name: '15 ans', code: 3 },
-  { name: '30 ans', code: 4 },
-  { name: '50 ans', code: 5 },
+export type GraveTypeMetadataT = {
+  label: string;
+  color: string;
+  contrastedColor: string;
+  icon: string;
+  code: number;
+};
+
+export const GraveTypesMeta: GraveTypeMetadataT[] = [
+  {
+    label: 'Vide',
+    color: '#8a8888',
+    contrastedColor: '#ebf0ec',
+    icon: 'pi pi-times-circle',
+    code: 0,
+  },
+  {
+    label: 'Réservée',
+    color: '#ffcc99',
+    contrastedColor: '#ff9966',
+    icon: 'pi pi-clipboard',
+    code: 1,
+  },
+  {
+    label: 'Perpétuité',
+    color: '#ff9999',
+    contrastedColor: '#ff6666',
+    icon: 'pi pi-calendar',
+    code: 2,
+  },
+  {
+    label: '15 ans',
+    color: '#ffccff',
+    contrastedColor: '#ff99ff',
+    icon: 'pi pi-angle-right',
+    code: 3,
+  },
+  {
+    label: '30 ans',
+    color: '#cc99ff',
+    contrastedColor: '#9966ff',
+    icon: 'pi pi-angle-double-right',
+    code: 4,
+  },
+  { label: '50 ans', color: '#99ccff', contrastedColor: '#6699ff', icon: 'pi pi-forward', code: 5 },
 ];
-
-// Pastel color, Empty is almost white, and then pastel colors
-const GraveTypeColors: { [key: number]: string } = {
-  0: '#8a8888',
-  1: '#ffcc99',
-  2: '#ff9999',
-  3: '#ffccff',
-  4: '#cc99ff',
-  5: '#99ccff',
-};
-
-// Darker color next to GraveTypeColors
-const GraveTypeColorsContrasted: { [key: number]: string } = {
-  0: '#ebf0ec',
-  1: '#ff9966',
-  2: '#ff6666',
-  3: '#ff99ff',
-  4: '#9966ff',
-  5: '#6699ff',
-};
 
 export class GraveUtils {
   static toString(grave: Grave): string {
@@ -47,15 +65,15 @@ export class GraveUtils {
   }
 
   static getColor(state: number): string {
-    return GraveTypeColors[state];
+    return GraveTypesMeta.find((type) => type.code === state)?.color || '#8a8888';
   }
 
   static getContrastedColor(state: number): string {
-    return GraveTypeColorsContrasted[state];
+    return GraveTypesMeta.find((type) => type.code === state)?.contrastedColor || '#ebf0ec';
   }
 
   static getGraveType(state: number): string {
-    return GraveTypes.find((type) => type.code === state)?.name || 'Inconnu';
+    return GraveTypesMeta.find((type) => type.code === state)?.label || 'Inconnu';
   }
 
   static compare(a: Grave | null, b: Grave | null): boolean {

@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import svgPanZoom from 'svg-pan-zoom';
 
 import { ImportsModule } from '../../imports';
-import { GraveUtils } from '../../utils/GraveUtils';
+import { GraveTypesMeta, GraveUtils } from '../../utils/GraveUtils';
 import { GraveSelectionService } from '../../services/GraveSelection.service';
 
 import { Lot } from '../../models/Lot';
@@ -37,6 +37,14 @@ const SELECTED_GRAVE_COLOR = '#80EF80';
 })
 export class MapComponent implements OnChanges {
   @Input() lots: Lot[] = [];
+
+  public GraveTypesLabelsColors = GraveTypesMeta.concat({
+    label: 'Sélectionné',
+    color: SELECTED_GRAVE_COLOR,
+    icon: 'pi pi-circle',
+    contrastedColor: '#000',
+    code: -1,
+  });
 
   constructor(
     private http: HttpClient,
