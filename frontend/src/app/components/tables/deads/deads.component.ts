@@ -1,10 +1,17 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Lot } from '../../../models/Lot';
 import { GraveSelectionService } from '../../../services/GraveSelection.service';
-import { GraveUtils } from '../../../utils/GraveUtils';
+import { GraveTypes, GraveUtils } from '../../../utils/GraveUtils';
 import { ImportsModule } from '../../../imports';
 import { Dead } from '../../../models/Dead';
 import { MONTHS } from '../../../utils/Utils';
+
+type DeadT = Dead & {
+  state: string;
+  lot: string;
+  grave: string;
+  entrydate: Date | string;
+};
 
 @Component({
   standalone: true,
@@ -13,17 +20,26 @@ import { MONTHS } from '../../../utils/Utils';
   templateUrl: './deads.component.html',
 })
 export class TableDeads implements OnChanges {
-  deads: Dead[] = [];
-
   constructor(private graveSelectedService: GraveSelectionService) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
       if (grave) {
         //alert(GraveUtils.toString(grave as Grave) + " NOT FROM DEADS TABLE");
+      } else {
+        this.selectedDead = null;
       }
     });
   }
 
+  GraveTypesArray: { label: string; value: string; index: number }[] = GraveTypes.map((type) => ({
+    label: type.name,
+    value: type.name,
+    index: type.code,
+  }));
+
   @Input() lots: Lot[] = [];
+  deads: DeadT[] = [];
+  selectedDead: Dead | null = null;
+  filteredDeads: any[] = [];
 
   ngOnChanges(changes: SimpleChanges) {
     if (
@@ -31,17 +47,31 @@ export class TableDeads implements OnChanges {
       changes['lots'].currentValue &&
       changes['lots'].currentValue.length > 0
     ) {
+      this.deads = [];
       for (let lot of this.lots) {
         if (!lot.graves) continue;
         for (let grave of lot.graves) {
           if (grave.deads) {
             for (let dead of grave.deads) {
-              this.deads.push(dead);
+              this.deads.push({
+                ...dead,
+                state: GraveUtils.getGraveType(grave.state),
+                lot: this.getLotName(lot.name),
+                grave: grave.identifier,
+                // @ts-ignore
+                entrydate: dead.entrydate ? new Date(dead.entrydate) : 'Non renseignée',
+              });
             }
           }
         }
       }
     }
+  }
+
+  onRowSelect(event: any) {
+    let graveId = event.data.grave_id;
+    let grave = this.lots.flatMap((lot) => lot.graves ?? []).find((grave) => grave.id == graveId);
+    this.graveSelectedService.selectItem(grave, true, false);
   }
 
   entryDateToReadable(entryDate: string): string {
@@ -51,30 +81,34 @@ export class TableDeads implements OnChanges {
     return `${MONTHS[month - 1]} ${year}`;
   }
 
-  getLotName(deadId: number): string {
-    let lot = this.lots.find((lot) =>
-      lot.graves?.some((grave) =>
-        grave.deads?.some((dead) => dead.id == deadId),
-      ),
-    );
-
-    if (lot && lot.name === 'PERPETUAL') return 'Perpétuelles';
-    return lot ? lot.name : '';
-  }
-
-  getTombeIdentifier(deadId: number): string {
-    let grave = this.lots
-      .flatMap((lot) => lot.graves ?? [])
-      .find((grave) => grave.deads?.some((dead) => dead.id == deadId));
-    return grave ? grave.identifier : '';
+  getLotName(str: string): string {
+    if (str === 'PERPETUAL') return 'Perpétuel';
+    return str;
   }
 
   getGraveState(deadId: number): string {
-    let grave = this.lots
-      .flatMap((lot) => lot.graves ?? [])
-      .find((grave) => grave.deads?.some((dead) => dead.id == deadId));
-    if (grave) return GraveUtils.getGraveType(grave);
+    let grave = this.getGraveFromDead(deadId);
+    if (grave) return GraveUtils.getGraveType(grave.state);
 
     return 'Inconnu';
+  }
+
+  getGraveTypeColor(deadId: number): string {
+    let grave = this.getGraveFromDead(deadId);
+    if (grave) return GraveUtils.getContrastedColor(grave.state);
+
+    return 'black';
+  }
+
+  getGraveTypeSeverity(value: number): any {
+    console.log(value);
+
+    return GraveUtils.getContrastedColor(value);
+  }
+
+  private getGraveFromDead(deadId: number): any {
+    return this.lots
+      .flatMap((lot) => lot.graves ?? [])
+      .find((grave) => grave.deads?.some((dead) => dead.id == deadId));
   }
 }

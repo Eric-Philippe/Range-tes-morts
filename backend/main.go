@@ -44,20 +44,22 @@ func serve() {
         w.Write([]byte("Range tes morts"))
     })
 
-    r.HandleFunc("/lots", handlers.CreateLot).Methods("POST")
-    r.HandleFunc("/graves", handlers.CreateGrave).Methods("POST")
-    r.HandleFunc("/lots/{lotId}/graves/{graveId}/deads", handlers.CreateDeadForGrave).Methods("POST")
+    // r.HandleFunc("/lots", handlers.CreateLot).Methods("POST")
+    // r.HandleFunc("/graves", handlers.CreateGrave).Methods("POST")
 
-    r.HandleFunc("/lots", handlers.GetLots).Methods("GET")
+    r.HandleFunc("/lots", handlers.GetLots).Methods("GET") // In active use
     r.HandleFunc("/lots/{id}", handlers.GetLot).Methods("GET")
 
     r.HandleFunc("/graves", handlers.GetGraves).Methods("GET")
     r.HandleFunc("/graves/{id}", handlers.GetGrave).Methods("GET")
+    r.HandleFunc("/graves", handlers.UpdateGrave).Methods("PUT") // In active use
+    r.HandleFunc("/graves/{id}/state", handlers.UpdateGraveState).Methods("PUT") 
 
     r.HandleFunc("/deads", handlers.GetDeads).Methods("GET")
     r.HandleFunc("/deads/{id}", handlers.GetDead).Methods("GET")
+    r.HandleFunc("/deads", handlers.UpdateDeads).Methods("PUT") // In active use
+    r.HandleFunc("/deads", handlers.DeleteDeads).Methods("DELETE") // In active use
 
-    r.HandleFunc("/graves/{id}/state", handlers.UpdateGraveState).Methods("PUT")
 
     // Enable CORS
     c := cors.New(cors.Options{

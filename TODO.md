@@ -7,18 +7,13 @@
 - [ ] Implement the login page
 - [ ] Update the auth service to use the login endpoint
 
-### Home
-
-- [ ] CRUD for the DEADS when selecting a grave (modal)
-
 #### Map
-- [ ] Add more buttons to the map
-- [ ] Try to display the grave identifier on the map when hovering over it
+
+- [ ] Display the map legend
 
 #### Tables
 
-- [ ] General table (Tree table Lots -> Graves -> Deads)
-- [ ] Deads table (Simple deads table with direct search bar)
+- [ ] Add more details to the tables
 
 ### Header
 

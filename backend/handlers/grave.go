@@ -73,3 +73,29 @@ func UpdateGraveState(w http.ResponseWriter, r *http.Request) {
 
     json.NewEncoder(w).Encode(grave)
 }
+
+func UpdateGrave(w http.ResponseWriter, r *http.Request) {
+    var newGrave models.Grave
+    if err := json.NewDecoder(r.Body).Decode(&newGrave); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    var grave models.Grave
+    if err := database.DB.Where("id = ?", newGrave.ID).First(&grave).Error; err != nil {
+        http.Error(w, err.Error(), http.StatusNotFound)
+        return
+    }
+
+    grave.Identifier = newGrave.Identifier
+    grave.State = newGrave.State
+    grave.LotID = newGrave.LotID
+    grave.Deads = newGrave.Deads
+
+    if err := database.DB.Save(&grave).Error; err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode(grave)
+}

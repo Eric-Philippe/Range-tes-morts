@@ -15,7 +15,15 @@ export class TableGeneral {
   constructor(private graveSelectedService: GraveSelectionService) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
       if (grave) {
-        // alert(GraveUtils.toString(grave as Grave) + " NOT FROM GENERAL TABLE");
+        this.selectedGrave = grave;
+        this.expandedRows = this.lots.reduce((acc, lot) => {
+          // @ts-ignore
+          acc[lot.id] = lot.graves.some((g) => g.id === grave.id);
+          return acc;
+        }, {});
+      } else {
+        this.selectedGrave = null;
+        this.expandedRows = {};
       }
     });
   }
@@ -30,11 +38,11 @@ export class TableGeneral {
   }
 
   getGraveType(grave: Grave): string {
-    return GraveUtils.getGraveType(grave);
+    return GraveUtils.getGraveType(grave.state);
   }
 
   getColor(grave: Grave): string {
-    return GraveUtils.getColor(grave);
+    return GraveUtils.getColor(grave.state);
   }
 
   getDeadCount(grave: Grave): string {
@@ -43,11 +51,11 @@ export class TableGeneral {
   }
 
   getLotName(lot: Lot): string {
-    if (lot && lot.name === 'PERPETUAL') return 'Perpétuelles';
+    if (lot && lot.name === 'PERPETUAL') return 'Perpétuel';
     return lot ? lot.name : '';
   }
 
   onRowSelect(event: any) {
-    this.graveSelectedService.selectItem(event.data);
+    this.graveSelectedService.selectItem(event.data, true, false);
   }
 }

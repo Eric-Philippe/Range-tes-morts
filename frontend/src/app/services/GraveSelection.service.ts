@@ -8,11 +8,14 @@ import { Dead } from '../models/Dead';
 })
 export class GraveSelectionService {
   private selectedItemSource = new BehaviorSubject<Grave | null>(null);
-  private selectedFromMap = false;
+  private reloadSvg = false;
+  private reloadData = false;
+  private needZoom = false;
   selectedItem$ = this.selectedItemSource.asObservable();
 
-  selectItem(item: any, fromMap = false): void {
-    this.selectedFromMap = fromMap;
+  selectItem(item: any, needZoom = false, reloadData = false): void {
+    this.needZoom = needZoom;
+    this.reloadData = reloadData;
     this.selectedItemSource.next(item);
   }
 
@@ -20,7 +23,23 @@ export class GraveSelectionService {
     return this.selectedItemSource.getValue();
   }
 
-  isSelectedFromMap(): boolean {
-    return this.selectedFromMap;
+  isZoomIn(): boolean {
+    return this.needZoom;
+  }
+
+  needReloadData(): boolean {
+    return this.reloadData;
+  }
+
+  getZoomIn(): boolean {
+    return this.needZoom;
+  }
+
+  toggleZoom(): void {
+    this.needZoom = !this.needZoom;
+  }
+
+  toggleReloadData(): void {
+    this.reloadData = !this.reloadData;
   }
 }

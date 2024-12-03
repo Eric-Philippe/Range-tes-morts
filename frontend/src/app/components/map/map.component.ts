@@ -26,7 +26,7 @@ const DEFAULT_SVG_PAN_OPTIONS = {
   contain: true,
 };
 
-const SELECTED_GRAVE_COLOR = '#FF746C';
+const SELECTED_GRAVE_COLOR = '#80EF80';
 
 @Component({
   standalone: true,
@@ -35,7 +35,7 @@ const SELECTED_GRAVE_COLOR = '#FF746C';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
 })
-export class MapComponent implements AfterViewInit, OnChanges {
+export class MapComponent implements OnChanges {
   @Input() lots: Lot[] = [];
 
   constructor(
@@ -44,14 +44,12 @@ export class MapComponent implements AfterViewInit, OnChanges {
     private graveSelectedService: GraveSelectionService,
   ) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
+      this.renderInitialStyle();
+
       if (grave) {
-        this.highlightSelectedGrave(grave as Grave);
+        this.highlightSelectedGrave(grave);
       }
     });
-  }
-
-  ngAfterViewInit() {
-    this.setupPanZoom();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -60,35 +58,46 @@ export class MapComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  private loadSVG() {
-    this.http
-      .get('/gravemap.svg', { responseType: 'text' })
-      .subscribe((svgContent) => {
-        const svgContainer = document.getElementById('svg-container');
-        if (svgContainer) {
-          svgContainer.innerHTML = svgContent;
-          const svgElement = svgContainer.querySelector('svg') as SVGElement;
-          svgElement.id = 'gravemap-svg';
-          svgElement.setAttribute('width', '100%');
-          svgElement.setAttribute('height', '100%');
-          this.addInteractions(svgElement);
-          this.setupPanZoom();
-        }
+  setupPanZoom(reset = false) {
+    const svgElement = document.getElementById('gravemap-svg');
+    if (svgElement) {
+      const panZoomInstance = svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS);
+      if (reset) {
+        panZoomInstance.reset();
+        this.graveSelectedService.selectItem(null, false, false);
+      }
+
+      panZoomInstance.zoom(1.8);
+      panZoomInstance.pan({
+        x: svgElement.clientWidth / 5,
+        y: svgElement.clientHeight / 20,
       });
+    }
+  }
+
+  private loadSVG() {
+    this.http.get('/gravemap.svg', { responseType: 'text' }).subscribe((svgContent) => {
+      const svgContainer = document.getElementById('svg-container');
+      if (svgContainer) {
+        svgContainer.innerHTML = svgContent;
+        const svgElement = svgContainer.querySelector('svg') as SVGElement;
+        svgElement.id = 'gravemap-svg';
+        svgElement.setAttribute('width', '100%');
+        svgElement.setAttribute('height', '100%');
+        this.addInteractions(svgElement);
+        this.setupPanZoom();
+      }
+    });
   }
 
   private addInteractions(svgElement: SVGElement) {
-    const pathElements = Array.from(
-      svgElement.querySelectorAll('[id*="PATH"]'),
-    );
+    const pathElements = Array.from(svgElement.querySelectorAll('[id*="PATH"]'));
 
     pathElements.forEach((pathElement) => {
       this.renderer.setStyle(pathElement, 'pointer-events', 'none');
     });
 
-    const graves = Array.from(
-      svgElement.querySelectorAll('[id*="#"]:not([id*="PATH"])'),
-    );
+    const graves = Array.from(svgElement.querySelectorAll('[id*="#"]:not([id*="PATH"])'));
     graves.forEach((element) => {
       const grave = this.getGrave(element.id);
       if (grave) {
@@ -99,21 +108,16 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   private addInteraction(element: Element, grave: Grave) {
     this.applyInitialStyle(element, grave);
-    this.renderer.listen(element, 'mouseover', () =>
-      this.applyHoverStyle(element, grave),
-    );
-    this.renderer.listen(element, 'mouseout', () =>
-      this.applyInitialStyle(element, grave),
-    );
+    this.renderer.listen(element, 'mouseover', () => this.applyHoverStyle(element, grave));
+    this.renderer.listen(element, 'mouseout', () => this.applyInitialStyle(element, grave));
     this.renderer.listen(element, 'click', () => this.selectGrave(grave));
   }
 
   private applyInitialStyle(element: Element, grave: Grave) {
-    const isTheSelectedGrave =
-      this.graveSelectedService.getSelectedItem()?.id === grave.id;
+    const isTheSelectedGrave = this.graveSelectedService.getSelectedItem()?.id === grave.id;
     let color = isTheSelectedGrave
       ? SELECTED_GRAVE_COLOR
-      : GraveUtils.getContrastedColor(grave);
+      : GraveUtils.getContrastedColor(grave.state);
 
     // if (grave.state === 0 && !isTheSelectedGrave) color = '#e0e0e0';
 
@@ -121,8 +125,18 @@ export class MapComponent implements AfterViewInit, OnChanges {
     this.renderer.setStyle(element, 'fill-opacity', '1');
   }
 
+  private renderInitialStyle() {
+    const graves = Array.from(document.querySelectorAll('[id*="#"]:not([id*="PATH"])'));
+    graves.forEach((element) => {
+      const graveElement = this.getGrave(element.id);
+      if (graveElement) {
+        this.applyInitialStyle(element, graveElement);
+      }
+    });
+  }
+
   private applyHoverStyle(element: Element, grave: Grave) {
-    const color = GraveUtils.getColor(grave);
+    const color = GraveUtils.getColor(grave.state);
     const darkerColor = this.darkenColor(color);
     this.renderer.setStyle(element, 'fill', darkerColor);
   }
@@ -139,39 +153,25 @@ export class MapComponent implements AfterViewInit, OnChanges {
   private selectGrave(grave: Grave) {
     // If the selected grave is already selected, deselect it
     if (this.graveSelectedService.getSelectedItem()?.id === grave.id) {
-      this.graveSelectedService.selectItem(null);
+      this.graveSelectedService.selectItem(null, false, false);
       return;
     }
 
-    this.graveSelectedService.selectItem(grave, true);
+    this.graveSelectedService.selectItem(grave, false, false);
   }
 
   private highlightSelectedGrave(grave: Grave) {
-    // Réinitialiser toutes les tombes
-    const graves = Array.from(
-      document.querySelectorAll('[id*="#"]:not([id*="PATH"])'),
-    );
-    graves.forEach((element) => {
-      const graveElement = this.getGrave(element.id);
-      if (graveElement) {
-        this.applyInitialStyle(element, graveElement);
-      }
-    });
-
     // Coloriser la tombe sélectionnée
     const selectedGraveElement = document.getElementById(`${grave.id}`);
 
     if (selectedGraveElement) {
-      this.renderer.setStyle(
-        selectedGraveElement,
-        'fill',
-        SELECTED_GRAVE_COLOR,
-      );
+      this.renderer.setStyle(selectedGraveElement, 'fill', SELECTED_GRAVE_COLOR);
       this.renderer.setStyle(selectedGraveElement, 'fill-opacity', '1');
 
       // Zoomer sur la tombe sélectionnée
       const svgElement = document.getElementById('gravemap-svg');
-      if (svgElement && !this.graveSelectedService.isSelectedFromMap()) {
+      if (svgElement && this.graveSelectedService.isZoomIn()) {
+        this.graveSelectedService.toggleZoom();
         const panZoomInstance = svgPanZoom(svgElement);
         panZoomInstance.zoom(3);
 
@@ -186,19 +186,6 @@ export class MapComponent implements AfterViewInit, OnChanges {
           y: -(y * realZoom) + panZoomInstance.getSizes().height / 2,
         });
       }
-    }
-  }
-
-  setupPanZoom(reset = false) {
-    const svgElement = document.getElementById('gravemap-svg');
-    if (svgElement) {
-      const panZoomInstance = svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS);
-      if (reset) panZoomInstance.reset();
-      panZoomInstance.zoom(1.8);
-      panZoomInstance.pan({
-        x: svgElement.clientWidth / 5,
-        y: svgElement.clientHeight / 20,
-      });
     }
   }
 

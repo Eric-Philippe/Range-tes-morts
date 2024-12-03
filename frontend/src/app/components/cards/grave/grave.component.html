@@ -1,0 +1,134 @@
+<div class="card">
+  <p-messages *ngIf="isModified" [(value)]="messages" [enableService]="false"></p-messages>
+  <p-messages [(value)]="outputMessages" [enableService]="false"></p-messages>
+  <p-card [header]="'Parcelle #' + grave?.identifier + ' - Lot ' + getGraveLotName()">
+    <div>
+      Statut:
+      <p-tag [style]="{ background: getGraveTagSeverity() }">{{ getGraveStatut() }} </p-tag>
+    </div>
+
+    <p-divider />
+
+    <div>
+      <div
+        *ngIf="
+          grave && grave.state === 0 && ((grave.deads && grave.deads.length == 0) || !grave.deads)
+        "
+      >
+        <p>Il n'y a pas de défunt dans cette parcelle.</p>
+      </div>
+      <div *ngIf="grave && (grave.state > 1 || (grave.deads && grave.deads.length > 0))">
+        <div
+          *ngFor="let dead of grave.deads; let i = index"
+          [ngStyle]="{ 'margin-top': i > 0 ? '30px' : '40px' }"
+        >
+          <div>
+            <form (ngSubmit)="onSubmit()">
+              <div class="inline-fields">
+                <div>
+                  <p-floatLabel>
+                    <input
+                      id="firstname-{{ i }}"
+                      pInputText
+                      [(ngModel)]="dead.firstname"
+                      name="firstname-{{ i }}"
+                      (ngModelChange)="onModelChange()"
+                      [disabled]="isOnDeletedDead(dead.id)"
+                    />
+                    <label for="firstname-{{ i }}">Prénom:</label>
+                  </p-floatLabel>
+                </div>
+                <div>
+                  <p-floatLabel>
+                    <input
+                      id="lastname-{{ i }}"
+                      pInputText
+                      [(ngModel)]="dead.lastname"
+                      name="lastname-{{ i }}"
+                      (ngModelChange)="onModelChange()"
+                      [disabled]="isOnDeletedDead(dead.id)"
+                      required
+                    />
+                    <label for="lastname-{{ i }}">Nom:</label>
+                  </p-floatLabel>
+                </div>
+                <div>
+                  <p-floatLabel>
+                    <p-calendar
+                      id="entryDate-{{ i }}"
+                      [(ngModel)]="dead.entrydate"
+                      name="entryDate-{{ i }}"
+                      (ngModelChange)="onModelChange()"
+                      view="month"
+                      dateFormat="mm/yy"
+                      showButtonBar="true"
+                      [disabled]="isOnDeletedDead(dead.id)"
+                      required
+                    ></p-calendar>
+                    <label for="entryDate-{{ i }}">Date d'entrée:</label>
+                  </p-floatLabel>
+                </div>
+                <div *ngIf="!isOnDeletedDead(dead.id); else deleted">
+                  <p-button
+                    icon="pi pi-trash"
+                    styleClass="p-button-danger"
+                    (click)="onRemoveDead(i, dead.id)"
+                  ></p-button>
+                </div>
+                <ng-template #deleted>
+                  <p-button
+                    icon="pi pi-undo"
+                    styleClass="p-button-secondary"
+                    (onClick)="onRemoveDead(i, dead.id)"
+                  ></p-button>
+                </ng-template>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div [style]="{ marginTop: '40px' }">
+        <p-button
+          label="Ajouter un défunt"
+          icon="pi pi-plus"
+          size="small"
+          [raised]="true"
+          severity="help"
+          [style]="{ marginRight: '10px' }"
+          [outlined]="true"
+          (onClick)="onAddDead()"
+        ></p-button>
+        <p-button
+          label="Changer le statut"
+          icon="pi pi-pencil"
+          size="small"
+          severity="warning"
+          [outlined]="true"
+          [raised]="true"
+          [style]="{ marginRight: '10px' }"
+          (onClick)="op.toggle($event)"
+        ></p-button>
+        <p-overlayPanel #op>
+          <p-dropdown
+            [options]="graveTypes"
+            optionLabel="name"
+            [(ngModel)]="selectedGraveType"
+            [checkmark]="true"
+            (onChange)="onModelChange()"
+          />
+        </p-overlayPanel>
+        <p-button
+          [label]="uneditedGrave?.state === 0 ? 'Ajouter' : 'Enregistrer'"
+          icon="pi pi-save"
+          size="small"
+          severity="primary"
+          [raised]="true"
+          [disabled]="!isModified"
+          (click)="onSubmit()"
+          [style]="{ marginRight: '10px' }"
+        ></p-button>
+      </div>
+    </div>
+  </p-card>
+</div>

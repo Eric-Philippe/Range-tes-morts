@@ -10,6 +10,11 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { CalendarModule } from 'primeng/calendar';
+import { MessagesModule } from 'primeng/messages';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { DropdownModule } from 'primeng/dropdown';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 const primeNgModules = [
   ButtonModule,
@@ -23,6 +28,11 @@ const primeNgModules = [
   InputTextModule,
   FloatLabelModule,
   CalendarModule,
+  MessagesModule,
+  OverlayPanelModule,
+  DropdownModule,
+  IconFieldModule,
+  InputIconModule,
 ];
 
 @NgModule({
