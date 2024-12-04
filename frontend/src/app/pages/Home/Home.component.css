@@ -1,6 +1,5 @@
 #map-container,
 #table-container {
-  width: 49%;
   overflow: hidden;
   display: inline-block;
   vertical-align: top;
@@ -9,10 +8,12 @@
 #map-container {
   margin-right: 2%;
   height: 100vh;
+  width: 41%;
 }
 
 #table-container {
   height: 130vh;
+  width: 57%;
 }
 
 #map-title {

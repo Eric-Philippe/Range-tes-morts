@@ -14,11 +14,10 @@
         <p-tabPanel header="Décédés">
           <table-deads [lots]="lots"></table-deads>
         </p-tabPanel>
-        <p-tabPanel
-          header="Parcelle"
-          [disabled]="!graveSelected"
-          [selected]="graveSelected"
-        >
+        <p-tabPanel header="Résumé">
+          <stats-card [lots]="lots"></stats-card>
+        </p-tabPanel>
+        <p-tabPanel header="Parcelle" [disabled]="!graveSelected" [selected]="graveSelected">
           <grave-card [lots]="lots"></grave-card>
         </p-tabPanel>
       </p-tabView>

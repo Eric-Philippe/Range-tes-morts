@@ -92,6 +92,23 @@
             </ng-template>
           </p-columnFilter>
         </th>
+        <th style="width: 5%">
+          Expiré
+          <p-columnFilter field="expired" matchMode="equals" display="menu">
+            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+              <p-dropdown
+                [ngModel]="value"
+                [options]="[
+                  { label: 'Oui', value: true },
+                  { label: 'Non', value: false }
+                ]"
+                (onChange)="filter($event.value)"
+                placeholder="Expiré"
+              >
+              </p-dropdown>
+            </ng-template>
+          </p-columnFilter>
+        </th>
       </tr>
     </ng-template>
 
@@ -104,6 +121,9 @@
         <td>{{ dead.grave }}</td>
         <td>
           <p-tag [value]="dead.state" [style]="{ background: getGraveTypeColor(dead.id) }" />
+        </td>
+        <td>
+          {{ dead.expired ? 'Oui' : 'Non' }}
         </td>
       </tr>
     </ng-template>

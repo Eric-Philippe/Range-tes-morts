@@ -1,0 +1,31 @@
+<div class="card">
+  <p-card header="Statistiques">
+    <div style="display: flex">
+      <p><b>Nombre de tombes :</b> {{ getGraveCount() }} tombes</p>
+    </div>
+    <div style="display: flex">
+      <p><b>Nombre de lots :</b> {{ lots.length }} lots</p>
+    </div>
+    <div style="display: flex">
+      <p><b>Nombre de défunts :</b> {{ getDeadsCount() }} défunts</p>
+    </div>
+    <div style="display: flex">
+      <p><b>Nombre de défunts expirés :</b> {{ getExpiredGravesCount() }} dates dépassées</p>
+    </div>
+    <div style="display: flex">
+      <p><b>Nombre de tombes vides :</b> {{ getGraveCountByType(0) }} tombes vides</p>
+    </div>
+    <div style="display: flex">
+      <div
+        *ngFor="let graveType of GraveTypesLabelsColors"
+        style="display: inline-block; margin-right: 5px; margin-bottom: 5px"
+      >
+        <p-tag
+          [style]="{ background: graveType.color }"
+          [icon]="graveType.icon"
+          [value]="graveType.label + ' : ' + getGraveCountByType(graveType.code)"
+        />
+      </div>
+    </div>
+  </p-card>
+</div>

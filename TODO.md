@@ -9,12 +9,13 @@
 
 #### Map
 
-- [ ] Display the map legend
+- [x] Display the map legend
 
 #### Tables
 
 - [ ] Add more details to the tables
-- [ ] Add warning when the grave is oudated
+- [x] Add warning when the grave is oudated
+- [x] Deads table : Resize the columns
 
 ### Header
 

@@ -163,6 +163,11 @@ export class GraveCard {
     return GraveUtils.getContrastedColor(this.selectedGraveType.code);
   }
 
+  getDeadExpired(dead: Dead): boolean {
+    if (!this.grave) return false;
+    return GraveUtils.isDeadExpired(dead, this.grave);
+  }
+
   private reload(grave: Grave | null) {
     if (grave) {
       this.grave = grave;

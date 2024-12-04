@@ -83,6 +83,11 @@
                   ></p-button>
                 </ng-template>
               </div>
+              <div *ngIf="getDeadExpired(dead)">
+                <p-tag severity="danger" icon="pi pi-exclamation-triangle"
+                  >Date d'entrée expirée</p-tag
+                >
+              </div>
             </form>
           </div>
         </div>

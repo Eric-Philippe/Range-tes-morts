@@ -11,6 +11,7 @@ type DeadT = Dead & {
   lot: string;
   grave: string;
   entrydate: Date | string;
+  expired: boolean;
 };
 
 @Component({
@@ -62,6 +63,7 @@ export class TableDeads implements OnChanges {
                 grave: grave.identifier,
                 // @ts-ignore
                 entrydate: dead.entrydate ? new Date(dead.entrydate) : 'Non renseignée',
+                expired: GraveUtils.isDeadExpired(dead, grave),
               });
             }
           }

@@ -8,10 +8,19 @@ import { TableGeneral } from '../../components/tables/general/general.component'
 import { TableDeads } from '../../components/tables/deads/deads.component';
 import { GraveSelectionService } from '../../services/GraveSelection.service';
 import { GraveCard } from '../../components/cards/grave/grave.component';
+import { StatsCard } from '../../components/cards/stats/stats.component';
 
 @Component({
   standalone: true,
-  imports: [ImportsModule, HeaderComponent, MapComponent, TableGeneral, TableDeads, GraveCard],
+  imports: [
+    ImportsModule,
+    HeaderComponent,
+    MapComponent,
+    TableGeneral,
+    TableDeads,
+    StatsCard,
+    GraveCard,
+  ],
   templateUrl: './Home.component.html',
   styleUrls: ['./Home.component.css'],
   providers: [LotsService],
@@ -27,7 +36,7 @@ export class HomeComponent implements OnInit {
   ) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
       if (grave) {
-        this.activeIndex = 2;
+        this.activeIndex = 3;
         this.graveSelected = true;
       } else {
         this.activeIndex = 0;
