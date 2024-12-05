@@ -32,6 +32,25 @@ func (s GraveState) String() string {
     }
 }
 
+func (s GraveState) ToString() string {
+    switch s {
+    case EMPTY:
+        return "Vide"
+    case RESERVED:
+        return "Réservé"
+    case PERPETUAL:
+        return "Pérpétuité"
+    case FIFTEEN:
+        return "15 ans"
+    case THIRTY:
+        return "30 ans"
+    case FIFTY:
+        return "50 ans"
+    default:
+        return "Inconnu"
+    }
+}
+
 // Grave represents a grave in a lot and can contain multiple deads
 type Grave struct {
     ID         string       `json:"id" gorm:"primaryKey"`

@@ -95,3 +95,5 @@ vendor/
 *.temp
 
 .angular/
+
+rangetesmorts.db

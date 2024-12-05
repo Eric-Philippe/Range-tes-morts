@@ -26,6 +26,8 @@ func main() {
     // If there is a -migrate flag, parse the SVG file and insert the data into the database
     if len(args) > 1 && args[1] == "-migrate" {
         helpers.MigrateSvgToDb("static/gravemap.svg")
+    } else if len(args) > 1 && args[1] == "-excel" {
+        helpers.GenerateExcelReport("gen/backup.xlsx", "Cimetière", true)
     } else {
         // Start the server
         serve()
