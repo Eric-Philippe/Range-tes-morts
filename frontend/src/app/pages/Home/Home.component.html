@@ -17,6 +17,9 @@
         <p-tabPanel header="Résumé">
           <stats-card [lots]="lots"></stats-card>
         </p-tabPanel>
+        <p-tabPanel header="Sauvegarde">
+          <save-card></save-card>
+        </p-tabPanel>
         <p-tabPanel header="Parcelle" [disabled]="!graveSelected" [selected]="graveSelected">
           <grave-card [lots]="lots"></grave-card>
         </p-tabPanel>

@@ -21,3 +21,7 @@ func GetExcelBackup(w http.ResponseWriter, r *http.Request) {
 	// Delete the file after sending it
 	os.Remove(fileName)
 }
+
+func GetGraveryMap(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "static/grave_map_with_numbers.png")
+}

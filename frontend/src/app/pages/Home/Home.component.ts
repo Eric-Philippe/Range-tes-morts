@@ -9,6 +9,7 @@ import { TableDeads } from '../../components/tables/deads/deads.component';
 import { GraveSelectionService } from '../../services/GraveSelection.service';
 import { GraveCard } from '../../components/cards/grave/grave.component';
 import { StatsCard } from '../../components/cards/stats/stats.component';
+import { SaveCard } from '../../components/cards/save/save.component';
 
 @Component({
   standalone: true,
@@ -19,6 +20,7 @@ import { StatsCard } from '../../components/cards/stats/stats.component';
     TableGeneral,
     TableDeads,
     StatsCard,
+    SaveCard,
     GraveCard,
   ],
   templateUrl: './Home.component.html',
@@ -36,7 +38,7 @@ export class HomeComponent implements OnInit {
   ) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
       if (grave) {
-        this.activeIndex = 3;
+        this.activeIndex = 4;
         this.graveSelected = true;
       } else {
         this.activeIndex = 0;

@@ -62,6 +62,9 @@ func serve() {
     r.HandleFunc("/deads", handlers.UpdateDeads).Methods("PUT") // In active use
     r.HandleFunc("/deads", handlers.DeleteDeads).Methods("DELETE") // In active use
 
+    r.HandleFunc("/backup/xlsx", handlers.GetExcelBackup).Methods("GET")
+    r.HandleFunc("/backup/map", handlers.GetGraveryMap).Methods("GET")
+
 
     // Enable CORS
     c := cors.New(cors.Options{
