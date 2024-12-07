@@ -94,12 +94,6 @@ func getAttr(attrs []xml.Attr, name string) string {
 }
 
 func MigrateSvgToDb(filepath string) {
-	// Initialize the database
-	database.Init()
-	database.DB.AutoMigrate(&models.Lot{}, &models.Grave{}, &models.Dead{})
-
-	// TODO Create a save file for the database
-
 	fmt.Println("Migrating the SVG file to the database")
 
 

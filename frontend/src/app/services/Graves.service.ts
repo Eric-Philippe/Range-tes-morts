@@ -7,9 +7,12 @@ import { Dead } from '../models/Dead';
 @Injectable()
 export class GravesService {
   async updateGrave(grave: Grave): Promise<Grave> {
+    const token = localStorage.getItem('token');
+
     return await fetch(`${API}/graves`, {
       method: 'PUT',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(grave),
@@ -23,9 +26,12 @@ export class GravesService {
   }
 
   async deleteDeads(deads: Dead[]): Promise<void> {
+    const token = localStorage.getItem('token');
+
     return await fetch(`${API}/deads`, {
       method: 'DELETE',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(deads),
@@ -39,11 +45,12 @@ export class GravesService {
   }
 
   async editDeads(deads: Dead[]): Promise<void> {
-    const URI = `${API}/deads`;
+    const token = localStorage.getItem('token');
 
-    return await fetch(URI, {
+    return await fetch(`${API}/deads`, {
       method: 'PUT',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(deads),

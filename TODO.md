@@ -1,34 +1,9 @@
 # TODO
 
-## Frontend
-
-### Login
-
-- [ ] Implement the login page
-- [ ] Update the auth service to use the login endpoint
-
-#### Map
-
-- [x] Display the map legend
-
-#### Tables
-
-- [ ] Add more details to the tables
-- [x] Add warning when the grave is oudated
-- [x] Deads table : Resize the columns
-
-### Header
-
-- [ ] Implement the disconnect button
-- [ ] Implement the routing
-- [ ] Keep the preferences page ?
-
-## Backend
-
-- [ ] Implement the login service
-- [ ] Generate Excel file from the database
-
-## Deployment
-
+- [ ] Create a guide page for the user
+- [ ] Create a proper README (Emphasize the possibility of using the project as it is, change the SVG and everything will work)
+- [ ] Create a proper LICENSE
+- [ ] Create a proper CHANGELOG listing all the v1 features
+- [ ] In the changelog and readme, specify the wish to add a action log feature
 - [ ] Dockerize the whole project
 - [ ] Deploy the project on a server

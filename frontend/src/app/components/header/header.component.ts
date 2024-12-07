@@ -15,18 +15,23 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Me déconnecter',
-        icon: 'pi pi-fw pi-power-off',
-      },
-      {
         label: 'Accueil',
         icon: 'pi pi-fw pi-home',
         routerLink: '/home',
       },
       {
-        label: 'Guide',
+        label: 'Guide - En cours',
         icon: 'pi pi-fw pi-cog',
         routerLink: '/guide',
+        disabled: true,
+      },
+      {
+        label: 'Me déconnecter',
+        icon: 'pi pi-fw pi-power-off',
+        command: () => {
+          localStorage.removeItem('token');
+          location.reload();
+        },
       },
     ];
   }

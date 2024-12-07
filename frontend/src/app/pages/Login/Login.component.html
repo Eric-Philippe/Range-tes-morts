@@ -1,12 +1,13 @@
 <div style="height: 100vh; display: flex; justify-content: center; align-items: center">
   <div
     style="
-      width: 400px;
+      width: 500px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       padding: 16px;
       border-radius: 5px;
     "
   >
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
     <div style="text-align: center; margin-bottom: 25px">
       <h2>Se connecter</h2>
     </div>
@@ -19,10 +20,10 @@
             type="text"
             formControlName="username"
             pInputText
-            [style]="{ width: '300px' }"
+            [style]="{ width: '400px' }"
           />
         </div>
-        <div style="margin-bottom: 25px; width: 400px">
+        <div style="margin-bottom: 25px; width: 500px">
           <label for="password" style="display: block; margin-bottom: 8px">Mot de passe</label>
           <p-password
             id="password"

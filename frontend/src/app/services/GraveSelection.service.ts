@@ -8,7 +8,6 @@ import { Dead } from '../models/Dead';
 })
 export class GraveSelectionService {
   private selectedItemSource = new BehaviorSubject<Grave | null>(null);
-  private reloadSvg = false;
   private reloadData = false;
   private needZoom = false;
   selectedItem$ = this.selectedItemSource.asObservable();

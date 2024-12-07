@@ -23,9 +23,7 @@ type DeadT = Dead & {
 export class TableDeads implements OnChanges {
   constructor(private graveSelectedService: GraveSelectionService) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
-      if (grave) {
-        //alert(GraveUtils.toString(grave as Grave) + " NOT FROM DEADS TABLE");
-      } else {
+      if (!grave) {
         this.selectedDead = null;
       }
     });
@@ -105,8 +103,6 @@ export class TableDeads implements OnChanges {
   }
 
   getGraveTypeSeverity(value: number): any {
-    console.log(value);
-
     return GraveUtils.getContrastedColor(value);
   }
 

@@ -4,9 +4,12 @@ import { API } from '../conf/env';
 @Injectable()
 export class BackupService {
   async downloadXlsxBackup() {
+    const token = localStorage.getItem('token');
+
     return await fetch(`${API}/backup/xlsx`, {
       method: 'GET',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -19,9 +22,12 @@ export class BackupService {
   }
 
   async downloadMapBackup() {
+    const token = localStorage.getItem('token');
+
     return await fetch(`${API}/backup/map`, {
       method: 'GET',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     }).then((response) => {

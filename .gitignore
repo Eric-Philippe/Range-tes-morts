@@ -97,3 +97,5 @@ vendor/
 .angular/
 
 rangetesmorts.db
+
+.env
