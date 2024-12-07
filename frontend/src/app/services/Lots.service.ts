@@ -16,6 +16,9 @@ export class LotsService {
     }).then((response) => {
       if (response.ok) {
         return response.json();
+      } else if (response.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
       }
 
       return Promise.reject(response);

@@ -40,3 +40,22 @@ func Login(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     w.Write([]byte(`{"token":"` + token + `"}`))
 }
+
+func IsLoggedIn(w http.ResponseWriter, r *http.Request) {
+    // Get the token from the Authorization header
+    token := r.Header.Get("Authorization")[7:]
+
+    if token == "" {
+        http.Error(w, "Authorization header missing", http.StatusUnauthorized)
+        return
+    }
+
+    // Check if the token is valid
+    if !helpers.IsLoggedIn(token) {
+        http.Error(w, "Invalid token", http.StatusUnauthorized)
+        return
+    }
+    
+    w.Header().Set("Content-Type", "application/json")
+    w.Write([]byte(`{"message":"You are logged in"}`))
+}

@@ -90,6 +90,8 @@ func serve() {
     api.HandleFunc("/backup/xlsx", handlers.GetExcelBackup).Methods("GET")
     api.HandleFunc("/backup/map", handlers.GetGraveryMap).Methods("GET")
 
+    api.HandleFunc("/user", handlers.IsLoggedIn).Methods("GET")
+
 
     // Enable CORS
     c := cors.New(cors.Options{

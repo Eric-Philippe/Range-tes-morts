@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { SERVER_URL } from '../conf/env';
+import { API, SERVER_URL } from '../conf/env';
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +28,21 @@ export class AuthService {
     localStorage.removeItem('token');
   }
 
-  isLoggedIn() {
-    return !!localStorage.getItem('token');
+  async isLoggedIn() {
+    if (!localStorage.getItem('token')) return false;
+
+    return await fetch(`${API}/user`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then((response) => {
+      if (response.ok) {
+        return true;
+      }
+
+      return false;
+    });
   }
 
   constructor() {}
