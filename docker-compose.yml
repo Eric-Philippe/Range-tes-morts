@@ -20,4 +20,4 @@ services:
 
     # Map port 80 in the container to port 3000 on the host machine
     ports:
-      - '6000:80'
+      - '7000:80'
