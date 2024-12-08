@@ -1,7 +1,6 @@
 version: '3.8'
 services:
   server-rangetesmorts:
-    name: server-rangetesmorts
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -13,7 +12,6 @@ services:
       - backend/.env
 
   client-rangetesmorts:
-    name: client-rangetesmorts
     # Build the Docker image using the Dockerfile in the current directory
     build:
       context: ./frontend
