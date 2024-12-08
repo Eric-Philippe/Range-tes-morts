@@ -1,44 +1,32 @@
-# Range tes morts - Bring out your dead
+# 🪦 Range tes morts - Bring out your dead 🪦
 
-## Useful curl commands
+`🪦 Range tes morts` is a simple tool to help manage all the deads in a cemetery. Draw the cemetery map as a SVG, edit the SVG with Python scripts to make it usable, populate the database with Go CLI, and serve the data with a Go server. Visualize the data with a higly interactive Angular client offering you an interactive map of the cemetery with a lot of features.
 
-### Step 1: Create a lot
+![main](img/general.png)
 
-```bash
-curl -X POST http://localhost:3000/lots -H "Content-Type: application/json" -d '{
-    "name": "Lot A"
-}'
-```
+## Table of contents
 
-### Step 2: Add graves to the lot
+- [🪦 Range tes morts - Bring out your dead 🪦](#-range-tes-morts---bring-out-your-dead-)
+  - [Table of contents](#table-of-contents)
+  - [Technologies](#technologies)
+  - [Installation](#installation)
+    - [Docker](#docker)
+    - [Manual installation](#manual-installation)
+  - [Usage](#usage)
+    - [Populate the database](#populate-the-database)
+    - [Run the server](#run-the-server)
+    - [Run the client](#run-the-client)
+  - [License](#license)
+  - [Changelog](#changelog)
 
-```bash
-curl -X POST http://localhost:3000/graves -H "Content-Type: application/json" -d '{
-    "state": 0,
-    "lot_id": 1,
-    "number": 1
-}'
-```
+## Installation
 
-### Step 3: Add a deceased to the grave
+## Technologies
 
-```bash
-curl -X POST http://localhost:3000/lots/PERPETUAL/graves/49/deads -H "Content-Type: application/json" -d '{
-    "firstname": "John",
-    "lastname": "Doe",
-    "entrydate": "2023-10-01T00:00:00Z",
-    "state": 1
-}'
-```
+| Name    | Description                                                                      | Version |
+| ------- | -------------------------------------------------------------------------------- | ------- |
+| Python  | Python is used to generate and modify the SVG file representing the cemetery.    | 3.12    |
+| Go      | Go is used as a CLI for the server, and serve the data to the client.            | 1.13    |
+| Angular | Angular is used to visualize the cemetery data with a highly interactive client. | 19.0    |
 
-### Step 4: Get all the lots
-
-```bash
-curl http://localhost:3000/lots
-```
-
-### Step 5: Get the newly created lot
-
-```bash
-curl http://localhost:3000/lot/1
-```
+The database is a simple SQLite database that is created and populated by the Go Server/CLI.

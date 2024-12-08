@@ -1,22 +1,36 @@
-CREATE TABLE Lot(
-   name VARCHAR(50),
-   PRIMARY KEY(name)
+-- Création de la base de données
+CREATE DATABASE cemetery;
+USE cemetery;
+
+-- Table des utilisateurs
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Grave(
-   ID SMALLINT,
-   state BYTE,
-   name VARCHAR(50) NOT NULL,
-   PRIMARY KEY(ID),
-   FOREIGN KEY(name) REFERENCES Lot(name)
+-- Table des lots
+CREATE TABLE lots (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE Dead(
-   ID COUNTER,
-   firstname VARCHAR(50),
-   lastname VARCHAR(50) NOT NULL,
-   entryDate VARCHAR(7),
-   GraveID SMALLINT NOT NULL,
-   PRIMARY KEY(ID),
-   FOREIGN KEY(GraveID) REFERENCES Grave(ID)
+-- Table des états des tombes
+-- Note : Utilisation d'un ENUM pour correspondre à l'enum GraveState en Go
+CREATE TABLE graves (
+    id VARCHAR(255) PRIMARY KEY,
+    identifier VARCHAR(3) NOT NULL,
+    state ENUM('EMPTY', 'RESERVED', 'PERPETUAL', 'FIFTEEN', 'THIRTY', 'FIFTY') NOT NULL,
+    lot_id INT NOT NULL,
+    FOREIGN KEY (lot_id) REFERENCES lots(id) ON DELETE CASCADE
+);
+
+-- Table des défunts
+CREATE TABLE deads (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(255) NOT NULL,
+    lastname VARCHAR(255) NOT NULL,
+    entrydate DATE NOT NULL,
+    grave_id VARCHAR(255) NOT NULL,
+    FOREIGN KEY (grave_id) REFERENCES graves(id) ON DELETE CASCADE
 );
