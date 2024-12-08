@@ -16,8 +16,6 @@ import (
 	"github.com/rs/cors"
 )
 
-const port = 3000
-
 // Main function
 // If the file is run directly, the server is started
 // If there is a -migrate flag, the SVG file is parsed and the data is inserted into the database
@@ -33,7 +31,7 @@ func main() {
     // If there is a -backup flag, generate an Excel file with the data from the database
     } else if len(args) > 1 && args[1] == "--excel" {
         helpers.GenerateExcelReport("gen/backup.xlsx", "Cimetière", true)
-    // If --newuser -p <password> -u <username> is passed, create a new user
+    // If --newuser -u <username> -p <password> is passed, create a new user
     } else if len(args) > 1 && args[1] == "--newuser" {
         helpers.CreateNewUser(args)
     // If --deleteuser -u <username> is passed, delete a user
@@ -62,7 +60,7 @@ func initEnv() {
 func serve() {
     // Configure the router
     r := mux.NewRouter()
-    r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    r.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
         w.Write([]byte("Range tes morts"))
     })
 
@@ -102,6 +100,7 @@ func serve() {
     })
 
     // Display a message when the server is started
+    port, _ := strconv.Atoi(os.Getenv("PORT"))
     log.Println("Server started on port", port)
 
     // Start the server

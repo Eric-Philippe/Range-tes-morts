@@ -4,6 +4,6 @@
 - [ ] Create a proper README (Emphasize the possibility of using the project as it is, change the SVG and everything will work)
 - [ ] Create a proper LICENSE
 - [ ] Create a proper CHANGELOG listing all the v1 features
-- [ ] In the changelog and readme, specify the wish to add a action log feature
+- [ ] In the changelog and readme, specify the wish to add a action log feature and migrate an excel to the database
 - [ ] Dockerize the whole project
 - [ ] Deploy the project on a server

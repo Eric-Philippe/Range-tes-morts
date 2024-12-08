@@ -4,9 +4,31 @@ import (
 	"backend/database"
 	"backend/models"
 	"log"
+	"os"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
+
+func CreateAllUsers() {
+	// Delete all users
+	database.DB.Exec("DELETE FROM users")
+
+	usernames := os.Getenv("USERS")
+	password := os.Getenv("PASSWORD")
+
+	// Split the usernames string into an array
+	userNames := strings.Split(usernames, ",")
+	for _, username := range userNames {
+		hash, err := generateHash(password)
+		if err != nil {
+			log.Fatal("Error generating hash")
+		}
+
+		user := models.User{Username: username, Password: hash}
+		database.DB.Create(&user)
+	}
+}
 
 func CreateNewUser(args []string) {
 	if len(args) < 6 {
@@ -54,6 +76,13 @@ func ListUsernames() {
 	}
 
 	log.Println("------")
+}
+
+func CountUsers() int {
+	var users []models.User
+	database.DB.Find(&users)
+
+	return len(users)
 }
 
 func generateHash(password string) (string, error) {

@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  golang-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./data:/app/data # Bind mount to access the SQLite DB
+    env_file:
+      - backend/.env
+
+  my-containerized-angular-app-example:
+    # Build the Docker image using the Dockerfile in the current directory
+    build:
+      context: ./frontend
+
+    # Map port 80 in the container to port 3000 on the host machine
+    ports:
+      - '3001:80'

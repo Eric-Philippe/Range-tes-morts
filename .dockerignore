@@ -1,0 +1,14 @@
+.git
+.editorconfig
+/.vscode/_
+/node_modules
+/e2e
+/docs
+.gitignore
+_.zip
+node_modules
+dist
+build
+_.env
+.env._
+.angular/cache
