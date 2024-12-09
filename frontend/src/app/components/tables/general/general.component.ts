@@ -18,7 +18,7 @@ export class TableGeneral implements OnChanges {
   expandedRows = {};
   selectedGrave: Grave | null = null;
 
-  graveTypes: GraveTypeMetadataT[] = GraveTypesMeta;
+  graveTypes: GraveTypeMetadataT[] = [];
   selectedType: GraveTypeMetadataT;
 
   first = 0;
@@ -27,6 +27,7 @@ export class TableGeneral implements OnChanges {
     private graveSelectedService: GraveSelectionService,
     private lotSelectedService: LotSelectionService,
   ) {
+    this.graveTypes = GraveTypesMeta.map((type) => ({ code: type.code, label: type.label }));
     this.graveTypes.push({ code: -1, label: 'Tous' });
     this.selectedType = this.graveTypes[this.graveTypes.length - 1];
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
@@ -56,8 +57,13 @@ export class TableGeneral implements OnChanges {
   }
 
   getParcelleCount(lot: Lot): string {
-    let count = lot.graves ? lot.graves.length : 0;
-    return '' + count;
+    if (this.selectedType.code == -1) {
+      let count = lot.graves ? lot.graves.length : 0;
+      return '' + count;
+    } else {
+      let count = lot.graves.filter((grave) => grave.state === this.selectedType.code).length;
+      return '' + count;
+    }
   }
 
   getGraveType(grave: Grave): string {

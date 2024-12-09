@@ -1,0 +1,24 @@
+<div>
+  <h3>{{ step.title }}</h3>
+  <div style="display: inline-flex">
+    <img [src]="selectedImgURL" alt="step.title" class="guide-step-image" />
+    <div class="guide-step-content">
+      <div class="guide-step-images" *ngFor="let img of step.illustrations">
+        <img
+          [src]="img"
+          alt="step.title"
+          class="guide-step-image"
+          (mouseenter)="selectHoveredImg(img)"
+          [id]="selectedImgURL === img ? 'selected' : ''"
+        />
+      </div>
+
+      <div style="margin-top: 80px">
+        <ul class="guide-step-steps" *ngFor="let substep of step.steps">
+          <!-- <h4>{{ substep }}</h4> -->
+          <li>{{ substep }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

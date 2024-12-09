@@ -16,6 +16,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { PasswordModule } from 'primeng/password';
+import { AccordionModule } from 'primeng/accordion';
 
 const primeNgModules = [
   ButtonModule,
@@ -37,6 +38,7 @@ const primeNgModules = [
   PasswordModule,
   FloatLabelModule,
   ReactiveFormsModule,
+  AccordionModule,
 ];
 
 @NgModule({

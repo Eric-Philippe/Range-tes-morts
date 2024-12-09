@@ -208,7 +208,6 @@ export class MapComponent implements OnChanges {
 
     pathElements.forEach((pathElement) => {
       const lotId = pathElement.id.split('#')[0];
-      console.log(lotId, lot?.name);
 
       const isTheSelectedLot = lot?.name === lotId;
       if (!isTheSelectedLot) return;

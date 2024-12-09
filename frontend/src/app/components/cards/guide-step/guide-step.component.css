@@ -1,0 +1,34 @@
+.guide-step-image {
+  height: 500px;
+  margin-right: 50px;
+}
+
+.guide-step-images {
+  display: inline-flex;
+}
+
+.guide-step-images .guide-step-image {
+  width: 100px; /* Taille petite pour les images à droite */
+  height: auto;
+  border-radius: 10px;
+  stroke: #3d3d3d;
+  stroke-width: 2;
+  filter: brightness(0.9);
+  margin-right: 25px;
+}
+
+.guide-step-images .guide-step-image:hover {
+  filter: brightness(1);
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+}
+
+#selected {
+  filter: brightness(1);
+  transform: scale(1.02);
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+}
+
+.guide-step-steps {
+  margin-top: 1.5em;
+  font-size: 1.2em;
+}

@@ -1,0 +1,182 @@
+{
+  "GUIDES": [
+    {
+      "title": "Comment sélectionner une parcelle",
+      "description": "Ce guide vous explique les différentes méthodes pour sélectionner une parcelle.",
+      "steps": [
+        {
+          "title": "Méthode 1",
+          "steps": [
+            "Passez votre curseur sur la parcelle de votre choix",
+            "Cliquez sur une parcelle sur la carte pour la sélectionner."
+          ],
+          "illustrations": ["/guide/1/1.png", "/guide/1/2.png"]
+        },
+        {
+          "title": "Méthode 2",
+          "steps": [
+            "Dans le menu 'Général', cliquez sur le lot qui vous intéresse.",
+            "Une fois menu déplié, descendez le jusqu'à trouver votre parcelle, puis cliquez dessus pour la sélectionner."
+          ],
+          "illustrations": ["/guide/1/3.png", "/guide/1/4.png", "/guide/1/5.png"]
+        },
+        {
+          "title": "Méthode 3",
+          "steps": [
+            "Dans le menu 'Décédés', sélectionnez un défunt, à l'aide des filtres.",
+            "Cliquez sur ce dernier pour séléctionner la parcelle lui appartenant"
+          ],
+          "illustrations": ["/guide/1/6.png", "/guide/1/7.png"]
+        }
+      ]
+    },
+    {
+      "title": "Comment ajouter un défunt",
+      "description": "Ce guide vous explique comment ajouter un défunt à une parcelle.",
+      "steps": [
+        {
+          "title": "Sélectionner une parcelle",
+          "steps": [
+            "Sélectionnez une parcelle (cf. guide 'Comment sélectionner une parcelle')",
+            "Cliquez sur le bouton 'Ajouter un défunt'.",
+            "la tombe passera automatiquement au statut 'Réservée' si elle est libre."
+          ],
+          "illustrations": ["/guide/2/1.png", "/guide/2/2.png"]
+        },
+        {
+          "title": "Renseigner le défunt",
+          "steps": [
+            "Remplissez les informations demandées. (Le prénom est facultatif)",
+            "Rentrez la date d'entrée si elle est antérieure à la date du jour entrée automatiquement.",
+            "Astuce: vous pouvez noter la date soit en utilisant le menu de date, soit en entrant la date manuellement à l'aide du clavier.",
+            "Pour changer le statut automatique, cliquez sur le bouton 'Changer le statut'"
+          ],
+          "illustrations": ["/guide/2/3.png", "/guide/2/4.png", "/guide/2/5.png", "/guide/2/6.png"]
+        },
+        {
+          "title": "[Faculatif] Renseigner d'autres défunts",
+          "steps": [
+            "Cliquez à nouveau sur 'Ajouter un défunt' pour renseigner un autre défunt.",
+            "Cliquez sur la poubelle rouge pour supprimer un défunt en cours de saisie."
+          ],
+          "illustrations": ["/guide/2/9.png", "/guide/2/10.png"]
+        },
+        {
+          "title": "Enregistrer les modifications",
+          "steps": [
+            "Cliquez sur 'Ajouter' ou 'Enregistrer les modifications' pour valider l'ajout du défunt.",
+            "A noter que si vous renseignez un statut daté (ex: '15 ans'), et que la date d'entrée est antérieure à la date du jour, un badge d'alerte vous signalera que le statut est dépassé."
+          ],
+          "illustrations": ["/guide/2/7.png", "/guide/2/8.png"]
+        }
+      ]
+    },
+    {
+      "title": "Comment supprimer un défunt",
+      "description": "Ce guide vous explique comment supprimer un défunt d'une parcelle.",
+      "steps": [
+        {
+          "title": "Sélectionner une parcelle",
+          "steps": [
+            "Sélectionnez une parcelle non vide (cf. guide 'Comment sélectionner une parcelle')",
+            "Repérez le défunt à supprimer dans la liste des défunts."
+          ],
+          "illustrations": ["/guide/3/1.png"]
+        },
+        {
+          "title": "Supprimer le défunt",
+          "steps": [
+            "Cliquez sur le bouton rouge avec l'icône de poubelle pour supprimer le défunt.",
+            "Le défunt est alors grisé, mais peut être restauré en cliquant sur le bouton gris en cas d'erreur.",
+            "Si le défunt retiré est le dernier de la parcelle, la tombe passera automatiquement au statut 'Vide'."
+          ],
+          "illustrations": ["/guide/3/2.png"]
+        },
+        {
+          "title": "Enregistrer les modifications",
+          "steps": [
+            "Cliquez sur 'Enregistrer les modifications' pour valider la suppression du défunt."
+          ],
+          "illustrations": ["/guide/3/3.png"]
+        }
+      ]
+    },
+    {
+      "title": "Comment modifier un défunt",
+      "description": "Ce guide vous explique comment modifier les informations d'un défunt.",
+      "steps": [
+        {
+          "title": "Sélectionner une parcelle",
+          "steps": [
+            "Sélectionnez une parcelle non vide (cf. guide 'Comment sélectionner une parcelle')"
+          ],
+          "illustrations": ["/guide/4/1.png"]
+        },
+        {
+          "title": "Modifier un défunt",
+          "steps": [
+            "Repérez le défunt à modifier dans la liste des défunts.",
+            "De là vous pouvez modifier le statut de la parcelle, le nom, le prénom et la date d'entrée du/des défunt(s).",
+            "Pensez à enregistrer les modifications en cliquant sur 'Enregistrer les modifications'."
+          ],
+          "illustrations": ["/guide/4/2.png", "/guide/4/3.png"]
+        }
+      ]
+    },
+    {
+      "title": "Comment rechercher toutes les tombes vides",
+      "description": "Ce guide vous explique comment rechercher toutes les tombes étant actuellement vides ou encore d'un autre statut.",
+      "steps": [
+        {
+          "title": "Sélectionner un statut",
+          "steps": [
+            "Dans le menu 'Général', cliquez sur 'Filtrer par type'.",
+            "Sélectionnez le statut de votre choix pour afficher les tombes correspondantes.",
+            "Vous pouvez monter et descendre le menu pour voir les différents statuts."
+          ],
+          "illustrations": ["/guide/5/1.png", "/guide/5/2.png", "/guide/5/3.png"]
+        },
+        {
+          "title": "Naviguer entre les tombes",
+          "steps": [
+            "De là, vous avez maintenant un tableau des lots, contenant uniquement les tombes correspondant à votre recherche.",
+            "Déroulez les lots pour voir les tombes correspondantes.",
+            "Astuce: En passant le curseur sur chaque lot dans le tableau, vous verrez son emplacement encadré en rouge sur la carte."
+          ],
+          "illustrations": ["/guide/5/4.png", "/guide/5/5.png"]
+        }
+      ]
+    },
+    {
+      "title": "Comment trouver rapidement un défunt",
+      "description": "Ce guide vous explique comment trouver rapidement un défunt à l'aide des filtres.",
+      "steps": [
+        {
+          "title": "Rechercher le défunt par son nom et prénom",
+          "steps": [
+            "Dans le menu 'Décédés' vous avez à disposition une barre de rechercher pour rechercher et dans les noms et prénoms des défunts.",
+            "Rentrez les informations de votre choix pour afficher les défunts correspondants."
+          ],
+          "illustrations": ["/guide/6/1.png", "/guide/6/2.png"]
+        },
+        {
+          "title": "Utiliser les filtres",
+          "steps": [
+            "Dans le menu 'Décédés', vous avez également la possibilité de filtrer les défunts par date d'entrée, lot, parcelle, statut de la parcelle et expiration.",
+            "Cliquez sur l'entonnoir correspondant à la colonne que vous souhaitez filtrer.",
+            "Effacer le filtre en re-cliquant sur l'entonnoir et en cliquant sur le bouton 'Effacer'."
+          ],
+          "illustrations": ["/guide/6/3.png", "/guide/6/4.png", "/guide/6/5.png"]
+        },
+        {
+          "title": "Afficher les détails du défunt",
+          "steps": [
+            "De là, vous pouvez maintenant sélectionner un défunt pour afficher ses informations.",
+            "En le sélectionnant, vous serez automatiquement déplacé sur la parcelle correspondante sur la carte."
+          ],
+          "illustrations": ["/guide/6/6.png"]
+        }
+      ]
+    }
+  ]
+}

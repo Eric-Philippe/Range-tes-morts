@@ -15,4 +15,5 @@ All notable changes to this project will be documented in this file.
 - A full client interface to visualize the cemetery data with Angular.
 - The possibility to search and filter the graves by name, date, and location.
 - The possibility to add, modify, and delete a grave from the client.
+- A complete guide to help the user to use the website.
 - The whole project is now dockerized and can be deployed with Docker.

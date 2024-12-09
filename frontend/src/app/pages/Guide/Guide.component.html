@@ -1,3 +1,18 @@
 <app-header></app-header>
 
 <h1>Guide d'utilisation</h1>
+
+<div class="card">
+  <p-accordion>
+    <p-accordionTab [header]="guide.title" *ngFor="let guide of guides">
+      <div style="margin-bottom: 20px">
+        <h2>{{ guide.title }}</h2>
+        <p>{{ guide.description }}</p>
+      </div>
+      <div *ngFor="let step of guide.steps">
+        <guide-step [step]="step"></guide-step>
+        <p-divider></p-divider>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</div>
