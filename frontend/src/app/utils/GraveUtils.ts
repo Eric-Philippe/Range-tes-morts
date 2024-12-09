@@ -140,7 +140,7 @@ export class GraveUtils {
     return true;
   }
 
-  private static compareDead(a: Dead, b: Dead): boolean {
+  static compareDead(a: Dead, b: Dead): boolean {
     if (a.id !== b.id) return false;
 
     if (a.firstname !== b.firstname || a.lastname !== b.lastname) return false;

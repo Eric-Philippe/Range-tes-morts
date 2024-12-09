@@ -8,10 +8,7 @@ import { Dead } from '../../../models/Dead';
 import { Message } from 'primeng/api';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { GravesService } from '../../../services/Graves.service';
-
-type DeadT = Dead & {
-  new: boolean;
-};
+import { DeadsService } from '../../../services/Deads.service';
 
 @Component({
   standalone: true,
@@ -19,7 +16,7 @@ type DeadT = Dead & {
   selector: 'grave-card',
   templateUrl: './grave.component.html',
   styleUrls: ['./grave.component.css'],
-  providers: [GravesService],
+  providers: [GravesService, DeadsService],
 })
 export class GraveCard {
   @Input() lots: Lot[] = [];
@@ -28,23 +25,39 @@ export class GraveCard {
   graveTypes = GraveTypesMeta;
 
   grave: Grave | null = null;
-  uneditedGrave: Grave | null = null;
   selectedGraveType = this.graveTypes[0];
-  originalGraveType = this.graveTypes[0];
-  deletedDeads: DeadT[] = [];
+
+  currentDeads: Dead[] = [];
+  createdDeads: Dead[] = [];
+  deletedDeads: Dead[] = [];
+  updatedDeads: Dead[] = [];
 
   isModified: boolean = false;
   messages: Message[] = [];
-  outputMessages: Message[] = [];
 
   constructor(
     private graveSelectedService: GraveSelectionService,
     private gravesService: GravesService,
+    private deadsService: DeadsService,
   ) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => this.reload(grave));
   }
 
   onModelChange() {
+    this.updateUpdatedDead();
+
+    const graveDeadsCount = this.grave?.deads?.length || 0;
+
+    // If the grave has no more deads, we reset the state to the default one
+    if (this.deletedDeads.length == graveDeadsCount && this.createdDeads.length == 0) {
+      this.selectedGraveType = this.graveTypes[0];
+    }
+
+    // If the grave was empty and this.createdDeads is not empty, we set the state to the first one
+    if (this.createdDeads.length > 0 && this.grave?.state == 0) {
+      this.selectedGraveType = this.graveTypes[2];
+    }
+
     const pastState = this.isModified;
     this.isModified = this._isModified();
 
@@ -61,77 +74,96 @@ export class GraveCard {
     }
   }
 
-  onRemoveDead(index: number, deadId: number) {
-    if (!this.grave?.deads) return;
+  onAddDead() {
+    this.createdDeads.push({
+      id: 0,
+      firstname: '',
+      lastname: '',
+      entrydate: new Date(),
+      grave_id: this.grave?.id || '',
+    });
 
-    const dead: Dead | DeadT = this.grave.deads[index];
+    this.onModelChange();
+  }
 
-    if ((dead as DeadT).new != null) {
-      this.grave.deads.splice(index, 1);
+  onRemoveDead(index: number) {
+    const dead = this.currentDeads[index];
+    if (dead.id) {
+      this.deletedDeads.push(dead);
     } else {
-      const deadIndex = this.deletedDeads.findIndex((dead) => dead.id === deadId);
-      if (deadIndex !== -1) {
-        this.deletedDeads.splice(deadIndex, 1);
-      } else {
-        this.deletedDeads.push(dead as DeadT);
-      }
-    }
-
-    if (this.grave.deads.length === this.deletedDeads.length) {
-      this.selectedGraveType = this.graveTypes[0];
-    } else if (this.uneditedGrave?.state === 0) {
-      this.selectedGraveType = this.graveTypes[1];
-    } else {
-      this.selectedGraveType = this.getGraveStatutCode();
+      this.createdDeads.splice(index, 1);
     }
 
     this.onModelChange();
   }
 
-  onAddDead() {
-    if (this.grave && !this.grave.deads) this.grave.deads = [];
+  onRollbackRemoveDead(deadId: number) {
+    const dead = this.deletedDeads.find((dead) => dead.id === deadId);
+    if (!dead) return;
 
-    this.grave?.deads?.push({
-      id: this.grave.deads.length,
-      firstname: '',
-      lastname: '',
-      entrydate: new Date(),
-      new: true,
-    } as Dead);
+    this.deletedDeads = this.deletedDeads.filter((dead) => dead.id !== deadId);
 
-    if (this.uneditedGrave?.state === 0) {
-      this.selectedGraveType = this.graveTypes[1];
-    }
+    this.onModelChange();
+  }
+
+  onRemoveNewlyDead(index: number) {
+    this.createdDeads.splice(index, 1);
 
     this.onModelChange();
   }
 
   async onSubmit() {
-    const newGrave = JSON.parse(JSON.stringify(this.grave)) as Grave;
+    if (!this.grave) return;
 
-    newGrave.state = this.selectedGraveType.code;
+    let updatedGrave: Grave = {
+      ...this.grave,
+      state: this.selectedGraveType.code,
+    };
 
-    if (this.deletedDeads.length > 0) {
-      await this.gravesService.deleteDeads(this.deletedDeads);
-      // @ts-ignore
-      newGrave.deads = newGrave.deads?.filter((dead) => !this.isOnDeletedDead(dead.id));
+    try {
+      // If the state has been changed, we need to update the grave
+      if (this.grave.state !== this.selectedGraveType.code) {
+        await this.gravesService.updateGrave(updatedGrave);
+      }
+
+      // If there are new deads, we need to create them
+      if (this.createdDeads.length > 0) {
+        await this.deadsService.createDeads(this.createdDeads);
+      }
+
+      // If there are updated deads, we need to update them
+      if (this.updatedDeads.length > 0) {
+        await this.deadsService.updateDeads(this.updatedDeads);
+      }
+
+      // If there are removed deads, we need to delete them
+      if (this.deletedDeads.length > 0) {
+        await this.deadsService.deleteDeads(this.deletedDeads);
+      }
+
+      updatedGrave = await this.gravesService.getGrave(this.grave.id);
+
+      this.reload(updatedGrave);
+      this.graveSelectedService.selectItem(updatedGrave, false, true);
+
+      this.messages = [
+        {
+          severity: 'success',
+          summary: 'Modifications sauvegardées',
+          detail: 'Les modifications ont été sauvegardées avec succès',
+        },
+      ];
+    } catch (error) {
+      console.log(error);
+
+      this.messages = [
+        {
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Une erreur est survenue lors de la sauvegarde des modifications',
+        },
+      ];
     }
-
-    // Get all the deads that are not new but have been modified
-    const modifiedDeads = newGrave.deads?.filter((dead) => !(dead as DeadT).new);
-    if (modifiedDeads) await this.gravesService.editDeads(modifiedDeads);
-
-    await this.gravesService.updateGrave(newGrave);
-
-    this.graveSelectedService.selectItem(newGrave, true, true);
-
-    this.outputMessages = [
-      {
-        severity: 'success',
-        summary: 'Sauvegarde réussie',
-        detail: 'Les modifications ont été enregistrées',
-      },
-    ];
   }
 
   isOnDeletedDead(deadId: number): boolean {
@@ -168,24 +200,46 @@ export class GraveCard {
     return GraveUtils.isDeadExpired(dead, this.grave);
   }
 
+  displayMessage(): boolean {
+    if (this.messages.length > 0 && this.messages[0].severity === 'warn' && !this.isModified)
+      return false;
+
+    return this.messages.length > 0;
+  }
+
+  private updateUpdatedDead() {
+    this.updatedDeads = this.currentDeads.filter((dead) => {
+      const originalDead = this.grave?.deads?.find((d) => d.id === dead.id);
+      if (!originalDead) return false;
+      return !GraveUtils.compareDead(dead, originalDead);
+    });
+  }
+
   private reload(grave: Grave | null) {
     if (grave) {
       this.grave = grave;
       this.selectedGraveType = this.getGraveStatutCode();
-      this.uneditedGrave = JSON.parse(JSON.stringify(grave)); // Deep copy
-      this.originalGraveType = this.getGraveStatutCode();
-      this.selectedGraveType = this.originalGraveType;
+
+      this.createdDeads = [];
+      // Make a deep copy of the deads
+      this.currentDeads = JSON.parse(JSON.stringify(grave.deads || []));
+      this.updatedDeads = [];
       this.deletedDeads = [];
+
       this.isModified = false;
+    } else {
     }
   }
 
   private _isModified() {
     if (this.deletedDeads.length > 0) return true;
 
-    return (
-      !GraveUtils.compare(this.grave, this.uneditedGrave) ||
-      this.originalGraveType.code !== this.selectedGraveType.code
-    );
+    if (this.createdDeads.length > 0) return true;
+
+    if (this.updatedDeads.length > 0) return true;
+
+    if (this.grave && this.grave.state !== this.selectedGraveType.code) return true;
+
+    return false;
   }
 }

@@ -1,6 +1,5 @@
 <div class="card">
-  <p-messages *ngIf="isModified" [(value)]="messages" [enableService]="false"></p-messages>
-  <p-messages [(value)]="outputMessages" [enableService]="false"></p-messages>
+  <p-messages *ngIf="displayMessage()" [(value)]="messages" [enableService]="false"></p-messages>
   <p-card [header]="'Parcelle #' + grave?.identifier + ' - Lot ' + getGraveLotName()">
     <div>
       Statut:
@@ -19,7 +18,7 @@
       </div>
       <div *ngIf="grave && (grave.state > 1 || (grave.deads && grave.deads.length > 0))">
         <div
-          *ngFor="let dead of grave.deads; let i = index"
+          *ngFor="let dead of currentDeads; let i = index"
           [ngStyle]="{ 'margin-top': i > 0 ? '30px' : '40px' }"
         >
           <div>
@@ -72,16 +71,85 @@
                   <p-button
                     icon="pi pi-trash"
                     styleClass="p-button-danger"
-                    (click)="onRemoveDead(i, dead.id)"
+                    (click)="onRemoveDead(i)"
                   ></p-button>
                 </div>
                 <ng-template #deleted>
                   <p-button
                     icon="pi pi-undo"
                     styleClass="p-button-secondary"
-                    (onClick)="onRemoveDead(i, dead.id)"
+                    (onClick)="onRollbackRemoveDead(dead.id)"
                   ></p-button>
                 </ng-template>
+              </div>
+              <div *ngIf="getDeadExpired(dead)">
+                <p-tag severity="danger" icon="pi pi-exclamation-triangle"
+                  >Date d'entrée expirée</p-tag
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="createdDeads">
+        <div
+          *ngFor="let dead of createdDeads; let i = index"
+          [ngStyle]="{ 'margin-top': i > 0 ? '30px' : '40px' }"
+        >
+          <div>
+            <form (ngSubmit)="onSubmit()">
+              <div class="inline-fields">
+                <div>
+                  <p-floatLabel>
+                    <input
+                      id="firstname-{{ i }}"
+                      pInputText
+                      [(ngModel)]="dead.firstname"
+                      name="firstname-{{ i }}"
+                      (ngModelChange)="onModelChange()"
+                      [disabled]="isOnDeletedDead(dead.id)"
+                    />
+                    <label for="firstname-{{ i }}">Prénom:</label>
+                  </p-floatLabel>
+                </div>
+                <div>
+                  <p-floatLabel>
+                    <input
+                      id="lastname-{{ i }}"
+                      pInputText
+                      [(ngModel)]="dead.lastname"
+                      name="lastname-{{ i }}"
+                      (ngModelChange)="onModelChange()"
+                      [disabled]="isOnDeletedDead(dead.id)"
+                      required
+                    />
+                    <label for="lastname-{{ i }}">Nom:</label>
+                  </p-floatLabel>
+                </div>
+                <div>
+                  <p-floatLabel>
+                    <p-calendar
+                      id="entryDate-{{ i }}"
+                      [(ngModel)]="dead.entrydate"
+                      name="entryDate-{{ i }}"
+                      (ngModelChange)="onModelChange()"
+                      view="month"
+                      dateFormat="mm/yy"
+                      showButtonBar="true"
+                      [disabled]="isOnDeletedDead(dead.id)"
+                      required
+                    ></p-calendar>
+                    <label for="entryDate-{{ i }}">Date d'entrée:</label>
+                  </p-floatLabel>
+                </div>
+                <div>
+                  <p-button
+                    icon="pi pi-trash"
+                    styleClass="p-button-danger"
+                    (click)="onRemoveNewlyDead(i)"
+                  ></p-button>
+                </div>
               </div>
               <div *ngIf="getDeadExpired(dead)">
                 <p-tag severity="danger" icon="pi pi-exclamation-triangle"
@@ -124,7 +192,7 @@
           />
         </p-overlayPanel>
         <p-button
-          [label]="uneditedGrave?.state === 0 ? 'Ajouter' : 'Enregistrer'"
+          [label]="this.grave?.state === 0 ? 'Créer' : 'Sauvegarder'"
           icon="pi pi-save"
           size="small"
           severity="primary"

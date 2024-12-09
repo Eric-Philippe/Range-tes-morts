@@ -69,25 +69,28 @@ func serve() {
     api := r.PathPrefix("/api").Subrouter()
     api.Use(middleware.TokenAuthMiddleware)
 
-    // r.HandleFunc("/lots", handlers.CreateLot).Methods("POST")
-    // r.HandleFunc("/graves", handlers.CreateGrave).Methods("POST")
-
-    api.HandleFunc("/lots", handlers.GetLots).Methods("GET") // In active use
+    // GET_ALL | GET_ONE
+    api.HandleFunc("/lots", handlers.GetLots).Methods("GET")
     api.HandleFunc("/lots/{id}", handlers.GetLot).Methods("GET")
 
+    // GET_ALL | GET_ONE | UPDATE | UPDATE_STATE
     api.HandleFunc("/graves", handlers.GetGraves).Methods("GET")
-    api.HandleFunc("/graves/{id}", handlers.GetGrave).Methods("GET")
-    api.HandleFunc("/graves", handlers.UpdateGrave).Methods("PUT") // In active use
+    api.HandleFunc("/grave", handlers.GetGrave).Methods("GET")
+    api.HandleFunc("/grave", handlers.UpdateGrave).Methods("PUT") // In active use
     api.HandleFunc("/graves/{id}/state", handlers.UpdateGraveState).Methods("PUT") 
 
-    api.HandleFunc("/deads", handlers.GetDeads).Methods("GET")
-    api.HandleFunc("/deads/{id}", handlers.GetDead).Methods("GET")
-    api.HandleFunc("/deads", handlers.UpdateDeads).Methods("PUT") // In active use
-    api.HandleFunc("/deads", handlers.DeleteDeads).Methods("DELETE") // In active use
+    // CREATE | GET_ALL | GET_ONE | UPDATE | DELETE
+    api.HandleFunc("/dead", handlers.CreateDead).Methods("POST")
+    api.HandleFunc("/dead", handlers.GetDeads).Methods("GET")
+    api.HandleFunc("/dead/{id}", handlers.GetDead).Methods("GET")
+    api.HandleFunc("/dead/{id}", handlers.UpdateDead).Methods("PUT")
+    api.HandleFunc("/dead/{id}", handlers.DeleteDead).Methods("DELETE")
 
+    // GET_XLXS | GET_MAP
     api.HandleFunc("/backup/xlsx", handlers.GetExcelBackup).Methods("GET")
     api.HandleFunc("/backup/map", handlers.GetGraveryMap).Methods("GET")
 
+    // USER
     api.HandleFunc("/user", handlers.IsLoggedIn).Methods("GET")
 
 
