@@ -20,18 +20,29 @@
   <div id="svg-container" class="svg-container"></div>
 </div>
 <div id="map-footer" class="map-footer">
+  <!-- Up Button -->
+  <p-button
+    severity="secondary"
+    icon="pi pi-arrow-up"
+    label="Haut"
+    (click)="up()"
+    class="btn-spacing"
+    size="small"
+  ></p-button>
   <p-button
     severity="secondary"
     icon="pi pi-minus"
     label="Dézoom"
     (click)="zoomOut()"
     class="btn-spacing"
+    size="small"
   ></p-button>
   <p-button
     icon="pi pi-refresh"
     label="Recentrer"
     (click)="setupPanZoom(true)"
     class="btn-spacing"
+    size="small"
   ></p-button>
   <p-button
     severity="secondary"
@@ -39,5 +50,14 @@
     label="Zoom"
     (click)="zoomIn()"
     class="btn-spacing"
+    size="small"
+  ></p-button>
+  <p-button
+    severity="secondary"
+    icon="pi pi-arrow-down"
+    label="Bas"
+    (click)="down()"
+    class="btn-spacing"
+    size="small"
   ></p-button>
 </div>

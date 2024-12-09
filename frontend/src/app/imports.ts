@@ -35,6 +35,7 @@ const primeNgModules = [
   IconFieldModule,
   InputIconModule,
   PasswordModule,
+  FloatLabelModule,
   ReactiveFormsModule,
 ];
 

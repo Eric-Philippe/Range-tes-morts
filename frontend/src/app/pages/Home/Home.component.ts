@@ -28,6 +28,7 @@ import { SaveCard } from '../../components/cards/save/save.component';
   providers: [LotsService],
 })
 export class HomeComponent implements OnInit {
+  lotIsEmpty: boolean = false;
   lots: Lot[] = [];
   activeIndex: number = 0;
   graveSelected: boolean = false;
@@ -67,6 +68,7 @@ export class HomeComponent implements OnInit {
       });
 
       this.lots = lots;
+      this.lotIsEmpty = this.lots.length === 0;
     });
   }
 }

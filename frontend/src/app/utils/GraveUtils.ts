@@ -13,10 +13,10 @@ export enum GraveTypeEnum {
 
 export type GraveTypeMetadataT = {
   label: string;
-  color: string;
-  contrastedColor: string;
-  icon: string;
   code: number;
+  color?: string;
+  contrastedColor?: string;
+  icon?: string;
 };
 
 export const GraveTypesMeta: GraveTypeMetadataT[] = [

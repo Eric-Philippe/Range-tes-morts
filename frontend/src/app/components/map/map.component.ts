@@ -1,11 +1,4 @@
-import {
-  Component,
-  Renderer2,
-  AfterViewInit,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Renderer2, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import svgPanZoom from 'svg-pan-zoom';
 
@@ -15,6 +8,7 @@ import { GraveSelectionService } from '../../services/GraveSelection.service';
 
 import { Lot } from '../../models/Lot';
 import { Grave } from '../../models/Grave';
+import { LotSelectionService } from '../../services/LotSelection.service';
 
 const DEFAULT_SVG_PAN_OPTIONS = {
   zoomEnabled: true,
@@ -50,6 +44,7 @@ export class MapComponent implements OnChanges {
     private http: HttpClient,
     private renderer: Renderer2,
     private graveSelectedService: GraveSelectionService,
+    private lotSelectedService: LotSelectionService,
   ) {
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
       this.renderInitialStyle();
@@ -57,6 +52,10 @@ export class MapComponent implements OnChanges {
       if (grave) {
         this.highlightSelectedGrave(grave);
       }
+    });
+
+    this.lotSelectedService.selectedItem$.subscribe((lot) => {
+      this.highlistSelectedLot(lot);
     });
   }
 
@@ -75,7 +74,7 @@ export class MapComponent implements OnChanges {
         this.graveSelectedService.selectItem(null, false, false);
       }
 
-      panZoomInstance.zoom(1.8);
+      panZoomInstance.zoom(1.5);
       panZoomInstance.pan({
         x: svgElement.clientWidth / 5,
         y: svgElement.clientHeight / 20,
@@ -197,6 +196,29 @@ export class MapComponent implements OnChanges {
     }
   }
 
+  private highlistSelectedLot(lot: Lot | null) {
+    const svgElement = document.getElementById('gravemap-svg');
+    if (!svgElement) return;
+    const pathElements = Array.from(svgElement.querySelectorAll('[id*="PATH"]'));
+
+    pathElements.forEach((pathElement) => {
+      this.renderer.setStyle(pathElement, 'stroke', '#000000');
+      this.renderer.setStyle(pathElement, 'stroke-width', '0.3');
+    });
+
+    pathElements.forEach((pathElement) => {
+      const lotId = pathElement.id.split('#')[0];
+      console.log(lotId, lot?.name);
+
+      const isTheSelectedLot = lot?.name === lotId;
+      if (!isTheSelectedLot) return;
+      this.renderer.setStyle(pathElement, 'stroke', '#a80808');
+      this.renderer.setStyle(pathElement, 'stroke-width', '1');
+      this.renderer.setStyle(pathElement, 'stroke-linejoin', 'round');
+      this.renderer;
+    });
+  }
+
   private getGrave(identifier: string): Grave | undefined {
     if (!identifier.includes('#')) return undefined;
 
@@ -213,5 +235,15 @@ export class MapComponent implements OnChanges {
   zoomOut() {
     const svgElement = document.getElementById('gravemap-svg');
     if (svgElement) svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS).zoomOut();
+  }
+
+  up() {
+    const svgElement = document.getElementById('gravemap-svg');
+    if (svgElement) svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS).panBy({ x: 0, y: 50 });
+  }
+
+  down() {
+    const svgElement = document.getElementById('gravemap-svg');
+    if (svgElement) svgPanZoom(svgElement, DEFAULT_SVG_PAN_OPTIONS).panBy({ x: 0, y: -50 });
   }
 }

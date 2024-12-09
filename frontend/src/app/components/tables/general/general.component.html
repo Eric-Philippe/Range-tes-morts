@@ -1,8 +1,33 @@
 <div class="card">
+  <div id="grave-type-filter" style="margin-bottom: 20px">
+    <p-floatLabel class="w-full md:w-56">
+      <p-dropdown
+        id="grave-type-select"
+        [options]="graveTypes"
+        [(ngModel)]="selectedType"
+        [showClear]="true"
+        [placeholder]="'Filtrer par type de tombe'"
+        (onChange)="onFilterSelect($event)"
+        (onClear)="onFilterClear()"
+      >
+        <ng-template let-item pTemplate="item">
+          <div
+            class="grave-type
+          grave-type-{{ item.value }}"
+          >
+            {{ item.label }}
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <label for="grave-type-select">Filtrer par type</label>
+    </p-floatLabel>
+  </div>
   <p-table
-    [value]="lots"
+    [value]="filteredLots"
     [paginator]="true"
-    [rows]="4"
+    [rows]="6"
+    styleClass="p-datatable-sm"
+    [first]="first"
     [expandedRowKeys]="expandedRows"
     dataKey="id"
   >
@@ -14,7 +39,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-lot let-expanded="expanded">
-      <tr>
+      <tr (mouseenter)="onHover(lot)" (mouseleave)="onLeave(lot)">
         <td>
           <p-button
             type="button"
@@ -23,6 +48,7 @@
             [text]="true"
             [rounded]="true"
             [plain]="true"
+            size="small"
             [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
           />
         </td>
@@ -51,7 +77,10 @@
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-grave>
-                <tr [pSelectableRow]="grave">
+                <tr
+                  [pSelectableRow]="grave"
+                  *ngIf="selectedType.code === -1 || grave.state === selectedType.code"
+                >
                   <td>{{ grave.identifier }}</td>
                   <td>
                     <p-tag

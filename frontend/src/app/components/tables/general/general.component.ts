@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Lot } from '../../../models/Lot';
 import { GraveSelectionService } from '../../../services/GraveSelection.service';
-import { GraveUtils } from '../../../utils/GraveUtils';
+import { GraveTypeMetadataT, GraveTypesMeta, GraveUtils } from '../../../utils/GraveUtils';
 import { Grave } from '../../../models/Grave';
 import { ImportsModule } from '../../../imports';
+import { LotSelectionService } from '../../../services/LotSelection.service';
 
 @Component({
   standalone: true,
@@ -11,8 +12,23 @@ import { ImportsModule } from '../../../imports';
   selector: 'table-general',
   templateUrl: './general.component.html',
 })
-export class TableGeneral {
-  constructor(private graveSelectedService: GraveSelectionService) {
+export class TableGeneral implements OnChanges {
+  @Input() lots: Lot[] = [];
+  filteredLots: Lot[] = [];
+  expandedRows = {};
+  selectedGrave: Grave | null = null;
+
+  graveTypes: GraveTypeMetadataT[] = GraveTypesMeta;
+  selectedType: GraveTypeMetadataT;
+
+  first = 0;
+
+  constructor(
+    private graveSelectedService: GraveSelectionService,
+    private lotSelectedService: LotSelectionService,
+  ) {
+    this.graveTypes.push({ code: -1, label: 'Tous' });
+    this.selectedType = this.graveTypes[this.graveTypes.length - 1];
     this.graveSelectedService.selectedItem$.subscribe((grave) => {
       if (grave) {
         this.selectedGrave = grave;
@@ -28,9 +44,16 @@ export class TableGeneral {
     });
   }
 
-  @Input() lots: Lot[] = [];
-  expandedRows = {};
-  selectedGrave: Grave | null = null;
+  ngOnChanges() {
+    this.filteredLots = this.lots;
+
+    // Sort the filteredLots by name, but the first one should be the perpetual lot
+    this.filteredLots.sort((a, b) => {
+      if (a.name === 'PERPETUAL') return -1;
+      if (b.name === 'PERPETUAL') return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }
 
   getParcelleCount(lot: Lot): string {
     let count = lot.graves ? lot.graves.length : 0;
@@ -57,5 +80,27 @@ export class TableGeneral {
 
   onRowSelect(event: any) {
     this.graveSelectedService.selectItem(event.data, true, false);
+  }
+
+  onFilterSelect(event: any) {
+    if (this.selectedType.code == -1) this.filteredLots = this.lots;
+    else
+      this.filteredLots = this.lots.filter((lot) =>
+        lot.graves.some((grave) => grave.state === this.selectedType.code),
+      );
+  }
+
+  onFilterClear() {
+    this.selectedType = this.graveTypes[this.graveTypes.length - 1];
+    this.filteredLots = this.lots;
+    this.first = 0;
+  }
+
+  onHover(lot: Lot) {
+    this.lotSelectedService.selectItem(lot);
+  }
+
+  onLeave(lot: Lot) {
+    this.lotSelectedService.selectItem(null);
   }
 }

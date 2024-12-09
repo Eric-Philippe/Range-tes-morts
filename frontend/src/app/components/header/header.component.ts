@@ -19,12 +19,11 @@ export class HeaderComponent implements OnInit {
         icon: 'pi pi-fw pi-home',
         routerLink: '/home',
       },
-      {
-        label: 'Guide - En cours',
-        icon: 'pi pi-fw pi-cog',
-        routerLink: '/guide',
-        disabled: true,
-      },
+      // {
+      //   label: 'Guide',
+      //   icon: 'pi pi-fw pi-cog',
+      //   routerLink: '/guide',
+      // },
       {
         label: 'Me déconnecter',
         icon: 'pi pi-fw pi-power-off',

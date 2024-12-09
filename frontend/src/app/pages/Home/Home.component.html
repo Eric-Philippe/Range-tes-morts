@@ -1,5 +1,11 @@
 <app-header></app-header>
 
+<div *ngIf="lotIsEmpty">
+  <div class="container">
+    <div class="card">Aucun lot n'a été trouvé pour le cimetière sélectionné.</div>
+  </div>
+</div>
+
 <div class="container">
   <div id="map-container" class="card">
     <map-component [lots]="lots"></map-component>
