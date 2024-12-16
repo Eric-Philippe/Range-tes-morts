@@ -26,6 +26,7 @@ export class GraveCard {
 
   grave: Grave | null = null;
   selectedGraveType = this.graveTypes[0];
+  manuallyChangedGraveType = false;
 
   currentDeads: Dead[] = [];
   createdDeads: Dead[] = [];
@@ -54,8 +55,14 @@ export class GraveCard {
     }
 
     // If the grave was empty and this.createdDeads is not empty, we set the state to the first one
-    if (this.createdDeads.length > 0 && this.grave?.state == 0) {
+    if (
+      this.createdDeads.length > 0 &&
+      this.grave?.state == 0 &&
+      this.selectedGraveType &&
+      !this.manuallyChangedGraveType
+    ) {
       this.selectedGraveType = this.graveTypes[2];
+      this.manuallyChangedGraveType = false;
     }
 
     const pastState = this.isModified;
@@ -108,6 +115,12 @@ export class GraveCard {
 
   onRemoveNewlyDead(index: number) {
     this.createdDeads.splice(index, 1);
+
+    this.onModelChange();
+  }
+
+  onEditGraveState() {
+    this.manuallyChangedGraveType = true;
 
     this.onModelChange();
   }
@@ -227,7 +240,7 @@ export class GraveCard {
       this.deletedDeads = [];
 
       this.isModified = false;
-    } else {
+      this.manuallyChangedGraveType = false;
     }
   }
 
